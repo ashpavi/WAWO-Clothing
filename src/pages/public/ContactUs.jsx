@@ -1,0 +1,322 @@
+import { useState } from "react";
+
+import { submitContactMessage } from "../../firebase/services/messageService";
+
+const EmailIcon = ({ color }) => (
+  <svg viewBox="0 0 24 24" className="w-9 h-9" fill="none">
+    <rect x="2" y="4" width="20" height="16" rx="3" fill={color} opacity="0.9"/>
+    <path d="M2 7l10 7 10-7" stroke="white" strokeWidth="1.8" strokeLinecap="round"/>
+  </svg>
+);
+
+const PhoneIcon = ({ color }) => (
+  <svg viewBox="0 0 24 24" className="w-9 h-9" fill="none">
+    <path d="M6.6 10.8c1.4 2.8 3.8 5.1 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.1.4 2.3.6 3.6.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1C10.6 21 3 13.4 3 4c0-.6.4-1 1-1h3.5c.6 0 1 .4 1 1 0 1.3.2 2.5.6 3.6.1.3 0 .7-.2 1L6.6 10.8z" fill={color}/>
+  </svg>
+);
+
+const ChatIcon = ({ color }) => (
+  <svg viewBox="0 0 24 24" className="w-10 h-10" fill="none">
+    <rect x="2" y="2" width="15" height="12" rx="3" fill={color}/>
+    <circle cx="6.5" cy="8" r="1.2" fill="white"/>
+    <circle cx="9.5" cy="8" r="1.2" fill="white"/>
+    <circle cx="12.5" cy="8" r="1.2" fill="white"/>
+    <rect x="7" y="10" width="15" height="11" rx="3" fill={color} opacity="0.4"/>
+  </svg>
+);
+
+const LocationIcon = ({ color }) => (
+  <svg viewBox="0 0 24 24" className="w-9 h-9" fill="none">
+    <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z" fill={color}/>
+    <circle cx="12" cy="9" r="2.5" fill="white"/>
+  </svg>
+);
+
+const contactMethods = [
+  {
+    title: "Email Us",
+    desc: "We'll respond within 24 hours",
+    value: "support@shopmodern.com",
+    bg: "bg-blue-50",
+    border: "border-blue-200",
+    iconBg: "bg-blue-100",
+    color: "#3b82f6",
+    text: "text-blue-600",
+    Icon: EmailIcon,
+  },
+  {
+    title: "Call Us",
+    desc: "Mon–Fri, 9am to 6pm EST",
+    value: "+1 (800) 123-4567",
+    bg: "bg-green-50",
+    border: "border-green-200",
+    iconBg: "bg-green-100",
+    color: "#22c55e",
+    text: "text-green-600",
+    Icon: PhoneIcon,
+  },
+  {
+    title: "Live Chat",
+    desc: "Available 24/7 for quick help",
+    value: "Start a conversation →",
+    bg: "bg-pink-50",
+    border: "border-pink-200",
+    iconBg: "bg-teal-100",
+    color: "#14b8a6",
+    text: "text-teal-600",
+    Icon: ChatIcon,
+  },
+  {
+    title: "Visit Us",
+    desc: "Our headquarters",
+    value: "123 Commerce St, New York",
+    bg: "bg-yellow-50",
+    border: "border-yellow-200",
+    iconBg: "bg-yellow-100",
+    color: "#f59e0b",
+    text: "text-yellow-600",
+    Icon: LocationIcon,
+  },
+];
+
+const faqs = [
+  {
+    q: "How long does shipping take?",
+    a: "Standard shipping takes 3–5 business days.",
+  },
+  {
+    q: "Can I return a product?",
+    a: "Yes! We offer returns within 30 days.",
+  },
+  {
+    q: "Where is my order?",
+    a: "You'll receive a tracking link via email.",
+  },
+  {
+    q: "How do I cancel my order?",
+    a: "Orders can be modified within 1 hour.",
+  },
+];
+
+export default function ContactUs() {
+
+  const [openFaq, setOpenFaq] = useState(null);
+  const [submitted, setSubmitted] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState("");
+  const [formData, setFormData] = useState({
+    fullName: "",
+    email: "",
+    topic: "",
+    message: "",
+  });
+
+  const handleChange = (field, value) => {
+    setFormData((prev) => ({ ...prev, [field]: value }));
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setSubmitError("");
+    setSubmitting(true);
+
+    try {
+      await submitContactMessage(formData);
+      setSubmitted(true);
+      setFormData({
+        fullName: "",
+        email: "",
+        topic: "",
+        message: "",
+      });
+    } catch (err) {
+      setSubmitError(err.message || "Failed to send message");
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  return (
+    <div className="bg-gray-100 text-gray-900">
+
+      {/* HERO */}
+      <section className="bg-gradient-to-br from-gray-900 via-blue-900 to-blue-800 text-white py-20 px-6 text-center">
+        <span className="bg-blue-500/20 border border-blue-400/30 px-4 py-1 rounded-full text-xs font-semibold uppercase tracking-wider">
+          Get in Touch
+        </span>
+
+        <h1 className="text-4xl md:text-5xl font-bold mt-6">
+          We'd love to <span className="text-blue-400">hear</span> from you
+        </h1>
+
+        <p className="text-gray-300 mt-4 max-w-xl mx-auto">
+          Have a question or feedback? Our team is here to help.
+        </p>
+      </section>
+
+      {/* CONTACT CARDS */}
+      <section className="max-w-6xl mx-auto px-6 py-16">
+        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+
+          {contactMethods.map(({ title, desc, value, bg, border, iconBg, color, text, Icon }) => (
+
+            <div
+              key={title}
+              className={`${bg} ${border} border rounded-2xl p-6 shadow-sm hover:shadow-xl hover:-translate-y-1 transition duration-300`}
+            >
+
+              <div className={`${iconBg} w-14 h-14 rounded-full flex items-center justify-center mb-4`}>
+                <Icon color={color}/>
+              </div>
+
+              <h3 className="font-semibold text-lg">{title}</h3>
+
+              <p className="text-gray-500 text-sm mt-1">
+                {desc}
+              </p>
+
+              <p className={`${text} font-semibold text-sm mt-2`}>
+                {value}
+              </p>
+
+            </div>
+          ))}
+
+        </div>
+      </section>
+
+      {/* MAIN GRID */}
+      <section className="max-w-6xl mx-auto px-6 pb-20 grid lg:grid-cols-2 gap-12">
+
+        {/* FORM */}
+        <div className="bg-white rounded-2xl border p-8 shadow-sm">
+
+          {submitted ? (
+            <div className="text-center py-10">
+              <div className="text-4xl mb-3">✅</div>
+              <h3 className="text-xl font-semibold">Message sent!</h3>
+              <p className="text-gray-500 mt-2">
+                Thanks for contacting us.
+              </p>
+
+              <button
+                onClick={() => setSubmitted(false)}
+                className="mt-6 border px-6 py-2 rounded-lg hover:border-blue-600 hover:text-blue-600 transition"
+              >
+                Send another
+              </button>
+            </div>
+          ) : (
+
+            <>
+              <h3 className="text-xl font-semibold mb-6">
+                Send a Message
+              </h3>
+
+              <form
+                onSubmit={handleSubmit}
+                className="space-y-4"
+              >
+
+                {submitError && (
+                  <p className="text-sm text-red-500">{submitError}</p>
+                )}
+
+                <div className="grid sm:grid-cols-2 gap-4">
+
+                  <input
+                    className="border rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 outline-none"
+                    placeholder="Full Name"
+                    value={formData.fullName}
+                    onChange={(e) => handleChange("fullName", e.target.value)}
+                    required
+                  />
+
+                  <input
+                    type="email"
+                    className="border rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 outline-none"
+                    placeholder="Email Address"
+                    value={formData.email}
+                    onChange={(e) => handleChange("email", e.target.value)}
+                    required
+                  />
+
+                </div>
+
+                <select
+                  className="w-full border rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 outline-none"
+                  value={formData.topic}
+                  onChange={(e) => handleChange("topic", e.target.value)}
+                  required
+                >
+                  <option value="">Select topic</option>
+                  <option value="Order & Shipping">Order & Shipping</option>
+                  <option value="Returns">Returns</option>
+                  <option value="Product Question">Product Question</option>
+                  <option value="Other">Other</option>
+                </select>
+
+                <textarea
+                  rows="5"
+                  className="w-full border rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 outline-none"
+                  placeholder="Tell us how we can help"
+                  value={formData.message}
+                  onChange={(e) => handleChange("message", e.target.value)}
+                  required
+                />
+
+                <button
+                  type="submit"
+                  disabled={submitting}
+                  className="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition"
+                >
+                  {submitting ? "Sending..." : "Send Message →"}
+                </button>
+
+              </form>
+            </>
+          )}
+        </div>
+
+        {/* FAQ */}
+        <div className="bg-white rounded-2xl border p-8 shadow-sm">
+
+          <h3 className="text-xl font-semibold mb-6">
+            Frequently Asked Questions
+          </h3>
+
+          <div className="space-y-4">
+
+            {faqs.map((faq, i) => (
+
+              <div key={i} className="border-b pb-3">
+
+                <button
+                  className="w-full flex justify-between text-left font-medium"
+                  onClick={() =>
+                    setOpenFaq(openFaq === i ? null : i)
+                  }
+                >
+                  {faq.q}
+                  <span>{openFaq === i ? "−" : "+"}</span>
+                </button>
+
+                {openFaq === i && (
+                  <p className="text-gray-500 text-sm mt-2">
+                    {faq.a}
+                  </p>
+                )}
+
+              </div>
+
+            ))}
+
+          </div>
+
+        </div>
+
+      </section>
+
+    </div>
+  );
+}
