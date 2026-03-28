@@ -62,17 +62,13 @@ export default function AdminSideBar({ isOpen, setIsOpen }) {
               <img
                 src={logo}
                 alt="LuxeStore Logo"
-                className="w-10 h-10 object-contain rounded-md"
+                className="w-18 h-18 object-contain rounded-full  p-1 shadow-sm"
               />
 
               <div>
                 <h2 className="text-base font-semibold text-white">
-                  LuxeStore
-                </h2>
-
-                <p className="text-xs text-gray-400">
                   Admin Panel
-                </p>
+                </h2>
               </div>
 
             </div>

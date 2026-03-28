@@ -29,6 +29,16 @@ export default function Overview() {
     return () => clearInterval(timer);
   }, []);
 
+  /* ================= FORMAT DATE ================= */
+  const formattedDate = currentTime.toLocaleDateString("en-GB", {
+    weekday: "long",
+    year: "numeric",
+    month: "long",
+    day: "numeric"
+  });
+
+  const formattedTime = currentTime.toLocaleTimeString();
+
   /* ================= FETCH DATA ================= */
   useEffect(() => {
 
@@ -83,9 +93,17 @@ export default function Overview() {
           </p>
         </div>
 
-        {/* MODERN DATE TIME */}
-        <div className="bg-gradient-to-r from-blue-500 to-indigo-600 text-white px-5 py-2 rounded-full shadow-lg text-sm font-medium">
-          {currentTime.toLocaleString()}
+        {/* ✅ FIXED DATE TIME (same as admin) */}
+        <div className="bg-white border rounded-xl px-4 py-3 shadow-sm text-right">
+
+          <p className="text-sm text-gray-500">
+            {formattedDate}
+          </p>
+
+          <p className="text-lg font-semibold text-gray-900">
+            {formattedTime}
+          </p>
+
         </div>
 
       </div>
@@ -123,7 +141,7 @@ export default function Overview() {
 
       </div>
 
-      {/* ================= ROW (ADMINS + ACTIVITY) ================= */}
+      {/* ================= ROW ================= */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
 
         {/* RECENT ADMINS */}
@@ -179,7 +197,7 @@ export default function Overview() {
             Activity Logs
           </h2>
 
-            <div className="space-y-3 text-sm max-h-72 overflow-y-auto pr-2 custom-scroll">
+          <div className="space-y-3 text-sm max-h-72 overflow-y-auto pr-2 custom-scroll">
             {recentAdmins.map((admin, index) => (
 
               <div
@@ -200,7 +218,6 @@ export default function Overview() {
               </div>
 
             ))}
-
           </div>
 
         </div>

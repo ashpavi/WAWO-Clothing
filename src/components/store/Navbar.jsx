@@ -77,7 +77,7 @@ export default function Navbar() {
         <div className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
 
           {/* LEFT */}
-          <div className="flex items-center space-x-4">
+          <div className="flex items-center space-x-6">
             <button
               className="md:hidden"
               onClick={() => setIsOpen(true)}
@@ -91,9 +91,7 @@ export default function Navbar() {
                 alt="Logo"
                 className="w-14 h-14 object-contain rounded-full border-b-1 p-1 shadow-sm"
               />
-              {/* <span className="font-bold text-gray-800">
-                Clothing
-              </span> */}
+              
             </Link>
 
             <div className="hidden md:flex space-x-6 ml-6 font-medium">
@@ -233,24 +231,46 @@ export default function Navbar() {
             <NavLink to="/contactUs" className={mobileNavClass} onClick={() => setIsOpen(false)}>Contact Us</NavLink>
 
             {!currentUser && (
-              <>
-                <NavLink to="/login" className={mobileNavClass} onClick={() => setIsOpen(false)}>Login</NavLink>
-                <NavLink to="/register" className={mobileNavClass} onClick={() => setIsOpen(false)}>Register</NavLink>
-              </>
+              <div className="flex flex-col gap-3 mt-4">
+
+                <NavLink
+                  to="/login"
+                  onClick={() => setIsOpen(false)}
+                  className={({ isActive }) =>
+                    `text-center px-4 py-2 rounded-full text-sm font-medium transition ${
+                      isActive
+                        ? "bg-blue-500 text-white"
+                        : "bg-blue-300 text-black hover:bg-blue-400"
+                    }`
+                  }
+                >
+                  Login
+                </NavLink>
+
+                <NavLink
+                  to="/register"
+                  onClick={() => setIsOpen(false)}
+                  className={({ isActive }) =>
+                    `text-center px-4 py-2 rounded-full text-sm font-medium transition ${
+                      isActive
+                        ? "bg-blue-800 text-white"
+                        : "bg-blue-600 text-white hover:bg-blue-700"
+                    }`
+                  }
+                >
+                  Register
+                </NavLink>
+
+              </div>
             )}
 
             {currentUser && (
               <>
-                <div className="flex items-center space-x-2 mt-4">
-                  <div className="w-8 h-8 bg-blue-600 text-white rounded-full flex items-center justify-center text-sm font-semibold">
-                    {firstName.charAt(0).toUpperCase()}
-                  </div>
-                  <span>{firstName}</span>
-                </div>
+                
 
                 <button
                   onClick={handleLogout}
-                  className="text-left text-red-500 mt-3"
+                  className="px-4 py-2 mt-5 rounded-full text-sm font-medium transition bg-red-500 text-white hover:bg-red-600"
                 >
                   Logout
                 </button>

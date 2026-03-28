@@ -149,7 +149,7 @@ export default function AdminDashboard() {
         <div className="bg-white border rounded-xl px-4 py-3 shadow-sm text-right">
 
           <p className="text-sm text-gray-500">
-            {formattedDate}
+            {formattedDate} 
           </p>
 
           <p className="text-lg font-semibold text-gray-900">

@@ -15,8 +15,9 @@ import { useAuth } from "../../hooks/useAuth";
 export default function Checkout() {
 
   const navigate = useNavigate();
-  const { cartItems } = useCart();
+  const { cartItems, clearCart } = useCart();
   const { currentUser } = useAuth();
+  const [loading, setLoading] = useState(false);
 
   const [paymentMethod, setPaymentMethod] = useState("card");
 
@@ -81,9 +82,26 @@ export default function Checkout() {
   return true;
 };
 
- const handlePlaceOrder = async () => {
+const handlePlaceOrder = async () => {
 
   if (!validateForm()) return;
+
+  if (loading) return; // 🔥 prevent double click
+
+  
+  for (const item of cartItems) {
+    if (item.stock === 0) {
+      alert(`${item.name} is out of stock`);
+      return;
+    }
+
+    if (item.quantity > item.stock) {
+      alert(`${item.name} only has ${item.stock} items left`);
+      return;
+    }
+  }
+
+  setLoading(true);
 
   try {
 
@@ -100,12 +118,13 @@ export default function Checkout() {
       codFee: COD_FEE,
       total,
       status: "Processing",
-      date: new Date().toISOString(),
       userId: currentUser ? currentUser.uid : null,
       isGuest: !currentUser,
     };
 
     const orderId = await createOrder(order);
+
+    clearCart(); 
 
     navigate("/orderSuccess", {
       state: {
@@ -125,8 +144,9 @@ export default function Checkout() {
 
     console.error("Order creation failed:", error);
 
+  } finally {
+    setLoading(false);
   }
-
 };
 
   return (
@@ -422,9 +442,14 @@ export default function Checkout() {
 
             <button
               onClick={handlePlaceOrder}
-              className="w-full bg-black text-white py-3 rounded-xl hover:bg-gray-800"
+              disabled={loading}
+              className={`w-full py-3 rounded-xl text-white ${
+                loading
+                  ? "bg-gray-400 cursor-not-allowed"
+                  : "bg-black hover:bg-gray-800"
+              }`}
             >
-              Place Order →
+              {loading ? "Placing Order..." : "Place Order →"}
             </button>
 
 

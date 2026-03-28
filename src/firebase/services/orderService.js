@@ -1,4 +1,4 @@
-import { collection, addDoc, getDocs, query, orderBy } from "firebase/firestore";
+import { collection, addDoc, getDocs, query, orderBy, doc, updateDoc, increment } from "firebase/firestore";
 import { db } from "../firebaseConfig";
 
 const ordersCollection = collection(db, "orders");
@@ -13,6 +13,15 @@ export const createOrder = async (orderData) => {
     status: "Processing",
     createdAt: new Date()
   });
+
+  // UPDATE STOCK
+  for (const item of orderData.items) {
+    const productRef = doc(db, "products", item.id);
+
+    await updateDoc(productRef, {
+      stock: increment(-item.quantity)
+    });
+  }
 
   return docRef.id;
 

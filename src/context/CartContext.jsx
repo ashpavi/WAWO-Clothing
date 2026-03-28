@@ -10,36 +10,50 @@ export function CartProvider({ children }) {
 
   const addToCart = (product) => {
 
-    setCartItems((prev) => {
+  setCartItems((prev) => {
 
-      const existing = prev.find((item) => item.id === product.id);
+    const existing = prev.find((item) => item.id === product.id);
 
-      if (existing) {
+    const quantityToAdd = product.quantity || 1;
 
-        const newQty = existing.quantity + product.quantity;
+    if (existing) {
 
-        if (newQty > product.stock) {
-          alert(`Only ${product.stock} items available in stock`);
-          return prev;
-        }
+      const newQty = existing.quantity + quantityToAdd;
 
-        return prev.map((item) =>
-          item.id === product.id
-            ? { ...item, quantity: newQty }
-            : item
-        );
-      }
-
-      if (product.quantity > product.stock) {
-        alert(`Only ${product.stock} items available in stock`);
+      if (newQty > existing.stock) {
+        alert(`Only ${existing.stock} items available in stock`);
         return prev;
       }
 
-      return [...prev, product];
+      return prev.map((item) =>
+        item.id === product.id
+          ? { ...item, quantity: newQty }
+          : item
+      );
+    }
 
-    });
+    // NORMALIZE PRODUCT HERE
+    const newItem = {
+      id: product.id,
+      name: product.name,
+      price: product.price,
+      images: product.images || [],
+      quantity: quantityToAdd,
+      stock: product.stock || 0, 
+      color: product.color || null,
+      size: product.size || null,
+    };
 
-  };
+    if (newItem.quantity > newItem.stock) {
+      alert(`Only ${newItem.stock} items available in stock`);
+      return prev;
+    }
+
+    return [...prev, newItem];
+
+  });
+
+};
 
 
   /* INCREASE QTY */

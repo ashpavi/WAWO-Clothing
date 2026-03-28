@@ -27,21 +27,18 @@ export default function SuperAdminLayout() {
         <div>
 
           {/* LOGO */}
-          <div className="p-6 border-b border-gray-800 flex items-center gap-3">
+          <div className="p-6   flex items-center gap-3">
 
             <img
               src={logo}
-              alt="LuxeStore"
-              className="w-10 h-10 object-contain rounded-md"
+              alt="LuxeStore" 
+              className="w-18 h-18 object-contain rounded-full  p-1 shadow-sm"
             />
 
             <div>
-              <p className="text-lg font-semibold">
-                LuxeStore
-              </p>
-              <p className="text-xs text-gray-400">
+              <h1 className="text-base font-semibold text-white">
                 Super Admin
-              </p>
+              </h1>
             </div>
 
           </div>

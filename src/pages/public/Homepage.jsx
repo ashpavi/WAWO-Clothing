@@ -2,9 +2,9 @@
 
 import { useProducts } from "../../hooks/useProducts";
 
-import slide1 from "../../assets/slide1.jpg";
-import slide2 from "../../assets/slide2.jpg";
-import slide3 from "../../assets/slide3.jpg";
+import slide1 from "../../assets/slide1.png";
+import slide2 from "../../assets/slide2.png";
+import slide3 from "../../assets/slide3.png";
 import ProductCard from "../../components/store/ProductCard";
 import Carousel from "../../components/store/HeroCarousel";
 import { useCategories } from "../../hooks/useCategories";
