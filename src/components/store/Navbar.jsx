@@ -5,7 +5,7 @@ import {
   FaTimes,
 } from "react-icons/fa";
 import { useState, useEffect } from "react";
-import logo from "../../assets/logo.jpg";
+import logo from "../../assets/logo.png";
 import { useAuth } from "../../hooks/useAuth";
 import { useCart } from "../../hooks/useCart";
 
@@ -89,11 +89,11 @@ export default function Navbar() {
               <img
                 src={logo}
                 alt="Logo"
-                className="w-8 h-8 sm:w-10 sm:h-10 object-contain"
+                className="w-14 h-14 object-contain rounded-full border-b-1 p-1 shadow-sm"
               />
-              <span className="font-semibold text-gray-800">
-                LuxeStore
-              </span>
+              {/* <span className="font-bold text-gray-800">
+                Clothing
+              </span> */}
             </Link>
 
             <div className="hidden md:flex space-x-6 ml-6 font-medium">
@@ -123,7 +123,7 @@ export default function Navbar() {
 
             {/* CART */}
             <Link to="/cart" className="relative">
-              <FaShoppingCart size={18} />
+              <FaShoppingCart className="text-blue-900 hover:text-blue-700" size={18} />
               {totalItems > 0 && (
                 <span className="absolute -top-2 -right-2 bg-blue-600 text-white text-xs px-1.5 py-0.5 rounded-full">
                   {totalItems}

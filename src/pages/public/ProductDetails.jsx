@@ -31,6 +31,7 @@ export default function ProductDetails() {
       name: product.name,
       price: product.price,
       stock: product.stock,
+      images: product.images,
       quantity: qty
     });
 

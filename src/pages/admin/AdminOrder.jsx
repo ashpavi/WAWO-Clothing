@@ -4,7 +4,7 @@ import { useOrders } from "../../hooks/useOrders";
 import { formatPrice } from "../../utils/formatPrice";
 import { formatPaymentMethod } from "../../utils/formatPaymentMethod";
 import { useReactToPrint } from "react-to-print";
-import logo from "../../assets/logo.jpg";
+import logo from "../../assets/logo.png";
 
 export default function AdminOrders() {
   const { orders, loading, updateOrderStatus } = useOrders();

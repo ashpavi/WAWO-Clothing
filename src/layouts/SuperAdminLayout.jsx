@@ -1,6 +1,6 @@
 import { Outlet, NavLink, useNavigate } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
-import logo from "../assets/logo.jpg";
+import logo from "../assets/logo.png";
 
 export default function SuperAdminLayout() {
 

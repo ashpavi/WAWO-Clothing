@@ -101,7 +101,8 @@ export default function Checkout() {
       total,
       status: "Processing",
       date: new Date().toISOString(),
-      userId: currentUser.uid
+      userId: currentUser ? currentUser.uid : null,
+      isGuest: !currentUser,
     };
 
     const orderId = await createOrder(order);
@@ -151,6 +152,27 @@ export default function Checkout() {
           {/* ================= LEFT SIDE ================= */}
 
           <div className="lg:col-span-2 space-y-8">
+            {!currentUser && (
+              <div className="bg-white border rounded-2xl p-5 mb-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 shadow-sm">
+                
+                <div>
+                  <p className="text-sm text-gray-700 font-medium">
+                    Checkout as a guest or login for a faster experience
+                  </p>
+                  <p className="text-xs text-gray-500">
+                    Save your details, track orders, and checkout quicker next time.
+                  </p>
+                </div>
+
+                <button
+                  onClick={() => navigate("/login")}
+                  className="px-5 py-2 text-sm bg-black text-white rounded-lg hover:bg-gray-800 transition"
+                >
+                  Login
+                </button>
+
+              </div>
+            )}
 
 
             {/* DELIVERY ADDRESS */}

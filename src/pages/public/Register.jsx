@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { FaUserPlus, FaEye, FaEyeSlash } from "react-icons/fa";
-import logo from "../../assets/logo.jpg";
+import logo from "../../assets/logo.png";
 import { useAuth } from "../../hooks/useAuth";
 
 export default function Register() {
@@ -53,21 +53,17 @@ export default function Register() {
           <img
             src={logo}
             alt="LuxeStore"
-            className="w-10 h-10 object-contain rounded-md"
+            className="w-20 h-20 object-contain rounded-full border-b-1 p-1 shadow-sm"
           />
 
-          <span className="text-xl font-semibold text-gray-900">
-            LuxeStore
-          </span>
+        
         </Link>
 
 
         {/* HEADER */}
         <div className="text-center mb-6">
 
-          <div className="bg-blue-50 w-12 h-12 flex items-center justify-center rounded-full mx-auto mb-3 text-blue-600">
-            <FaUserPlus size={18} />
-          </div>
+          
 
           <h2 className="text-2xl font-semibold text-gray-900">
             Create Account

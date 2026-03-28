@@ -10,7 +10,7 @@ import {
 } from "react-icons/fa";
 import { MdOutlineMessage } from "react-icons/md";
 
-import logo from "../../assets/logo.jpg";
+import logo from "../../assets/logo.png";
 import { useAuth } from "../../hooks/useAuth";
 
 export default function AdminSideBar({ isOpen, setIsOpen }) {
