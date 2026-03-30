@@ -196,7 +196,7 @@ export default function AdminOrders() {
         </div>
       )}
 
-      {/* ✅ BEAUTIFUL PRINT INVOICE */}
+      {/* PRINT INVOICE */}
       <div className="hidden">
         <div ref={printRef} style={{ fontFamily: "Arial", padding: "30px" }}>
 
@@ -267,7 +267,7 @@ export default function AdminOrders() {
           {/* FOOTER */}
           <div style={{ marginTop: "50px", textAlign: "center", fontSize: "12px", color: "#777" }}>
             <p>Thank you for your purchase!</p>
-            <p>LuxeStore • support.luxestore@gmail.com</p>
+            <p>WAWO Clothing • wavoclothinglk@gmail.com</p>
           </div>
 
         </div>
