@@ -39,7 +39,7 @@ const Footer = () => {
             </a>
 
             {/* WhatsApp */}
-            <a href="https://wa.me/0765358085" className="group w-10 h-10 flex items-center justify-center rounded-full bg-gray-900 border border-gray-700 hover:bg-white transition">
+            <a href="https://wa.me/94765358085" className="group w-10 h-10 flex items-center justify-center rounded-full bg-gray-900 border border-gray-700 hover:bg-white transition">
               <svg className="w-4 h-4 text-gray-400 group-hover:text-black transition" fill="currentColor" viewBox="0 0 24 24">
                 <path d="M20.52 3.48A11.77 11.77 0 0012.01 0C5.37 0 .02 5.35.02 11.99c0 2.11.55 4.17 1.6 5.98L0 24l6.2-1.62a11.94 11.94 0 005.81 1.48h.01c6.63 0 11.99-5.35 11.99-11.99 0-3.2-1.25-6.2-3.49-8.39z"/>
               </svg>

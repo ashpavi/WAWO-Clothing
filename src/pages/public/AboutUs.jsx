@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import AboutHeroArtwork from "../../components/store/AboutHeroArtwork";
 
 const teamMembers = [
   {
@@ -44,15 +45,20 @@ export default function AboutUs() {
     <div className="bg-white text-gray-900">
 
       {/* HERO */}
-      <section className="bg-gradient-to-br from-gray-900 via-blue-900 to-blue-800 text-white px-6 py-24 text-center">
-        <div className="max-w-3xl mx-auto">
+      <section className="relative text-white px-6 py-24 text-center overflow-hidden">
+        <div className="absolute inset-0">
+          <AboutHeroArtwork/>
+        </div>
+        <div className="absolute inset-0 bg-black/15"/>
+
+        <div className="relative max-w-3xl mx-auto">
 
           <span className="inline-block text-xs tracking-widest uppercase bg-blue-500/20 border border-blue-400/30 px-4 py-1 rounded-full mb-6">
             Our Story
           </span>
 
           <h1 className="text-4xl sm:text-5xl font-bold leading-tight">
-            Shopping <span className="text-blue-400">Reimagined</span>
+            Shopping <span className="text-[#7B6BEE]">Reimagined</span>
           </h1>
 
           <p className="mt-6 text-gray-300 text-base sm:text-lg">
@@ -64,7 +70,7 @@ export default function AboutUs() {
 
             <button
               onClick={() => navigate("/products")}
-              className="bg-blue-600 px-6 py-3 rounded-xl font-semibold hover:bg-blue-700 transition"
+              className="bg-[#7B6BEE] px-6 py-3 rounded-xl font-semibold hover:bg-[#6A5ADF] transition"
             >
               Explore Our Store
             </button>
@@ -91,7 +97,7 @@ export default function AboutUs() {
 
           <div className="text-center mb-14">
             <h2 className="text-3xl font-bold">
-              Trusted by Millions
+              Trusted by <span className="text-[#7B6BEE]">Millions</span>
             </h2>
             <p className="text-gray-500 mt-3">
               Our impact in numbers speaks for itself.
@@ -107,11 +113,11 @@ export default function AboutUs() {
                 className="group bg-white rounded-2xl p-8 text-center border border-gray-100 shadow-sm hover:shadow-xl hover:-translate-y-2 transition-all duration-300"
               >
 
-                <p className="text-4xl font-bold bg-gradient-to-r from-blue-600 to-blue-400 bg-clip-text text-transparent">
+                <p className="text-4xl font-bold text-[#7B6BEE]">
                   {stat.value}
                 </p>
 
-                <div className="w-12 h-1 bg-blue-600 mx-auto my-4 rounded-full group-hover:w-20 transition-all duration-300"/>
+                <div className="w-12 h-1 bg-[#7B6BEE] mx-auto my-4 rounded-full group-hover:w-20 transition-all duration-300"/>
 
                 <p className="text-gray-500 text-sm tracking-wide">
                   {stat.label}
@@ -221,7 +227,7 @@ export default function AboutUs() {
 
 
       {/* CTA */}
-      <section className="bg-blue-600 text-white py-20 text-center px-6">
+      <section className="bg-[#7B6BEE] text-white py-20 text-center px-6">
 
         <h2 className="text-3xl font-bold">
           We're Just Getting Started
@@ -233,7 +239,7 @@ export default function AboutUs() {
 
         <button
           onClick={() => navigate("/products")}
-          className="mt-8 bg-white text-blue-600 px-8 py-3 rounded-xl font-semibold hover:bg-gray-200 transition"
+          className="mt-8 bg-white text-[#7B6BEE] px-8 py-3 rounded-xl font-semibold hover:bg-gray-200 transition"
         >
           Start Shopping →
         </button>
