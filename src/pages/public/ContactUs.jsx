@@ -28,33 +28,33 @@ const contactMethods = [
     title: "Email Us",
     desc: "We'll respond within 24 hours",
     value: "wavoclothinglk@gmail.com",
-    bg: "bg-blue-50",
-    border: "border-blue-200",
-    iconBg: "bg-blue-100",
-    color: "#3b82f6",
-    text: "text-blue-600",
+    bg: "bg-[#EDE8FF]",
+    border: "border-[#DCD2FF]",
+    iconBg: "bg-[#CFC1FF]",
+    color: "#7E6FE3",
+    text: "text-[#5E4EC5]",
     Icon: EmailIcon,
   },
   {
     title: "Call Us",
     desc: "Mon-Sat, 9am to 6pm LKT",
     value: "+94 76 535 8085",
-    bg: "bg-green-50",
-    border: "border-green-200",
-    iconBg: "bg-green-100",
-    color: "#22c55e",
-    text: "text-green-600",
+    bg: "bg-[#E6EEFF]",
+    border: "border-[#CFDBFF]",
+    iconBg: "bg-[#BDD0FF]",
+    color: "#4D77DB",
+    text: "text-[#345BB8]",
     Icon: PhoneIcon,
   },
   {
     title: "Visit Us",
     desc: "Serving customers online",
     value: "Available online, Sri Lanka.",
-    bg: "bg-yellow-50",
-    border: "border-yellow-200",
-    iconBg: "bg-yellow-100",
-    color: "#f59e0b",
-    text: "text-yellow-600",
+    bg: "bg-[#F0ECFF]",
+    border: "border-[#E0D8FF]",
+    iconBg: "bg-[#D8CBFF]",
+    color: "#8A73E6",
+    text: "text-[#6A53CC]",
     Icon: LocationIcon,
   },
 ];
@@ -255,7 +255,7 @@ export default function ContactUs() {
                 <button
                   type="submit"
                   disabled={submitting}
-                  className="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition"
+                  className="w-full bg-[#7E6FE3] text-white py-3 rounded-lg hover:bg-[#6A53CC] transition"
                 >
                   {submitting ? "Sending..." : "Send Message →"}
                 </button>
