@@ -7,6 +7,7 @@ import slide2 from "../../assets/slide2.png";
 import slide3 from "../../assets/slide3.png";
 import ProductCard from "../../components/store/ProductCard";
 import Carousel from "../../components/store/HeroCarousel";
+import AboutHeroArtwork from "../../components/store/AboutHeroArtwork";
 import { useCategories } from "../../hooks/useCategories";
 import { useNavigate } from "react-router-dom";
 
@@ -156,13 +157,15 @@ export default function HomePage() {
 
 
       {/* PROMO */}
-      <section className="bg-gradient-to-r 
-                          from-blue-600 
-                          to-blue-500 
-                          text-white 
-                          py-16 sm:py-20">
+      <section className="relative overflow-hidden text-white py-16 sm:py-20">
 
-        <div className="max-w-7xl mx-auto px-4 text-center">
+        <div className="absolute inset-0">
+          <AboutHeroArtwork />
+        </div>
+
+        <div className="absolute inset-0 bg-[#2a0a4a]/80"></div>
+
+        <div className="relative max-w-7xl mx-auto px-4 text-center">
 
           <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold">
             Special Weekend Sale
@@ -175,10 +178,10 @@ export default function HomePage() {
           <button
             type="button"
             onClick={() => navigate("/products")}
-            className="mt-8 bg-white text-blue-600 
+            className="mt-8 bg-[#7b6bee] text-white 
                              px-8 py-3 rounded-xl 
                              font-semibold 
-                             hover:bg-gray-200 
+                             hover:bg-[#8b7cf1] 
                              transition cursor-pointer"
           >
             Explore Deals
