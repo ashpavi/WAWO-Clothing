@@ -1,4 +1,5 @@
 import { useMemo, useState } from "react";
+import { ArrowRightLeft, Ruler, Shirt, CircleHelp } from "lucide-react";
 import AboutHeroArtwork from "../../components/store/AboutHeroArtwork";
 
 const tshirtData = {
@@ -110,7 +111,7 @@ export default function SizeGuide() {
           <span className="inline-flex items-center gap-2 rounded-full border border-blue-400/35 bg-blue-500/15 px-4 py-1 text-xs font-bold uppercase tracking-[0.18em] text-blue-200">
             Find Your Perfect Fit
           </span>
-          <h1 className="mt-4 text-4xl font-extrabold leading-tight tracking-tight text-white md:text-6xl">
+          <h1 className="mt-4 text-4xl font-bold leading-tight text-white md:text-6xl">
             Size <span className="text-blue-400">Guide</span>
           </h1>
           <p className="mt-3 max-w-xl text-sm leading-7 text-[#8888aa] md:text-base">
@@ -173,13 +174,24 @@ export default function SizeGuide() {
           </div>
         </div>
 
-        <div className="grid items-start gap-6 md:grid-cols-[minmax(240px,300px),1fr]">
-          <div className="rounded-2xl border border-[#e8e8ee] bg-white p-6 text-center shadow-sm">
-            <p className="mb-5 text-xs font-bold uppercase tracking-[0.18em] text-[#aaaabc]">Measurement Points</p>
-            <div className="flex justify-center">{activeTab === "tshirt" ? <TShirtSVG /> : <HoodieSVG />}</div>
-            <div className="mt-5 flex flex-wrap justify-center gap-4 text-sm font-semibold text-[#666680]">
-              <div className="flex items-center gap-2"><span className="h-0.5 w-6 rounded bg-blue-500" />Chest</div>
-              <div className="flex items-center gap-2"><span className="h-0.5 w-6 rounded bg-amber-500" />Length</div>
+        <div className="space-y-6">
+          <div className="grid gap-6 md:grid-cols-2">
+            <div className="rounded-3xl border border-[#e8e8ee] bg-white p-6 text-center shadow-sm">
+              <p className="mb-5 text-xs font-bold uppercase tracking-[0.18em] text-[#8f8f9f]">Measurement Points - T-Shirt</p>
+              <div className="flex justify-center"><TShirtSVG /></div>
+              <div className="mt-5 flex flex-wrap justify-center gap-6 text-sm font-semibold text-[#2f3850]">
+                <div className="flex items-center gap-2"><span className="h-0.5 w-8 rounded bg-blue-500" />Chest</div>
+                <div className="flex items-center gap-2"><span className="h-0.5 w-8 rounded bg-amber-500" />Length</div>
+              </div>
+            </div>
+
+            <div className="rounded-3xl border border-[#e8e8ee] bg-white p-6 text-center shadow-sm">
+              <p className="mb-5 text-xs font-bold uppercase tracking-[0.18em] text-[#8f8f9f]">Measurement Points - Hoodie</p>
+              <div className="flex justify-center"><HoodieSVG /></div>
+              <div className="mt-5 flex flex-wrap justify-center gap-6 text-sm font-semibold text-[#2f3850]">
+                <div className="flex items-center gap-2"><span className="h-0.5 w-8 rounded bg-blue-500" />Chest</div>
+                <div className="flex items-center gap-2"><span className="h-0.5 w-8 rounded bg-amber-500" />Length</div>
+              </div>
             </div>
           </div>
 
@@ -239,34 +251,36 @@ export default function SizeGuide() {
         </div>
 
         <div className="mt-12">
-          <h2 className="text-3xl font-extrabold tracking-tight text-[#1a1a2e]">How To <span className="text-blue-500">Measure</span></h2>
+          <h2 className="text-3xl font-extrabold tracking-tight text-[#1a1a2e]">How To <span className="text-[#4FA8FF]">Measure</span></h2>
           <p className="mt-2 text-sm text-[#8888a0]">Use a flexible measuring tape. Keep it snug, not tight.</p>
 
           <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
             {[
               {
-                icon: "📏",
+                icon: Shirt,
                 title: "Chest",
                 desc: "Wrap the tape around the fullest part of your chest, just under your arms. Keep it level all around.",
               },
               {
-                icon: "📐",
+                icon: Ruler,
                 title: "Length H.P.S",
                 desc: "Measure from the highest point of your shoulder straight down to the bottom hem.",
               },
               {
-                icon: "🔄",
+                icon: ArrowRightLeft,
                 title: "Between Sizes?",
                 desc: "Choose one size up for relaxed fit. Size down only for a tighter fit.",
               },
               {
-                icon: "🙋",
+                icon: CircleHelp,
                 title: "Need Help?",
                 desc: "DM us on Instagram @wavoclothing.store and we will help pick your best fit.",
               },
             ].map((tip) => (
               <article key={tip.title} className="rounded-2xl border border-[#e8e8ee] bg-white p-5 shadow-sm transition hover:border-blue-500/40 hover:shadow">
-                <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-xl bg-blue-50 text-lg">{tip.icon}</div>
+                <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-xl bg-blue-50 text-blue-600">
+                  <tip.icon size={20} strokeWidth={2.2} />
+                </div>
                 <h3 className="text-xs font-bold uppercase tracking-[0.08em] text-[#1a1a2e]">{tip.title}</h3>
                 <p className="mt-2 text-sm leading-6 text-[#8888a0]">{tip.desc}</p>
               </article>

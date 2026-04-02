@@ -400,7 +400,7 @@ export default function AboutUs() {
           </span>
 
           <h1 className="text-4xl sm:text-5xl font-bold leading-tight">
-            Shopping <span className="text-[#7b6bee]">Reimagined</span>
+            Shopping <span className="text-[#4FA8FF]">Reimagined</span>
           </h1>
 
           <p className="mt-6 text-gray-300 text-base sm:text-lg">

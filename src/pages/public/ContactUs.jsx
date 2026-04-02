@@ -28,7 +28,7 @@ const contactMethods = [
     title: "Email Us",
     desc: "We'll respond within 24 hours",
     value: "wavoclothinglk@gmail.com",
-    bg: "bg-[#EDE8FF]",
+    bg: "bg-white",
     border: "border-[#DCD2FF]",
     iconBg: "bg-[#CFC1FF]",
     color: "#7E6FE3",
@@ -39,7 +39,7 @@ const contactMethods = [
     title: "Call Us",
     desc: "Mon-Sat, 9am to 6pm LKT",
     value: "+94 76 535 8085",
-    bg: "bg-[#E6EEFF]",
+    bg: "bg-white",
     border: "border-[#CFDBFF]",
     iconBg: "bg-[#BDD0FF]",
     color: "#4D77DB",
@@ -50,7 +50,7 @@ const contactMethods = [
     title: "Visit Us",
     desc: "Serving customers online",
     value: "Available online, Sri Lanka.",
-    bg: "bg-[#F0ECFF]",
+    bg: "bg-white",
     border: "border-[#E0D8FF]",
     iconBg: "bg-[#D8CBFF]",
     color: "#8A73E6",
@@ -255,7 +255,7 @@ export default function ContactUs() {
                 <button
                   type="submit"
                   disabled={submitting}
-                  className="w-full bg-[#7E6FE3] text-white py-3 rounded-lg hover:bg-[#6A53CC] transition"
+                  className="w-full bg-[#3B82F6] text-white py-3 rounded-lg hover:bg-[#2563EB] transition"
                 >
                   {submitting ? "Sending..." : "Send Message →"}
                 </button>
