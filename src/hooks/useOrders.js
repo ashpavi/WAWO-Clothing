@@ -20,14 +20,14 @@ export function useOrders(userId = null) {
     let q;
 
     if (userId) {
-      // ✅ CUSTOMER
+      //  CUSTOMER
       q = query(
         collection(db, "orders"),
         where("userId", "==", userId),
         orderBy("createdAt", "desc")
       );
     } else {
-      // ✅ ADMIN
+      //  ADMIN
       q = query(
         collection(db, "orders"),
         orderBy("createdAt", "desc")
@@ -47,7 +47,7 @@ export function useOrders(userId = null) {
     },
   (error) => {
     console.error("Firestore error:", error);
-    setLoading(false); // 🔥 prevents stuck loading
+    setLoading(false); 
   });
 
     return unsubscribe;

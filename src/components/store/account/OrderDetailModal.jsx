@@ -55,7 +55,9 @@ export default function OrderDetailModal({ order, onClose }) {
           </p>
 
           <p className="text-sm text-gray-500 mt-1">
-            Placed on {new Date(order.date).toLocaleDateString()}
+            Placed on {
+              order.createdAt?.toDate?.().toLocaleDateString() || "N/A"
+            }
           </p>
 
         </div>
