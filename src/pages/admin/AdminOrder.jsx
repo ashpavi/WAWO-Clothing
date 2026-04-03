@@ -134,7 +134,9 @@ export default function AdminOrders() {
               <p><strong>Status:</strong> {selectedOrder.status}</p>
               <p>
                 <strong>Date:</strong>{" "}
-                {new Date(selectedOrder.date).toLocaleDateString()}
+                {selectedOrder?.createdAt?.seconds
+                  ? new Date(selectedOrder.createdAt.seconds * 1000).toLocaleDateString()
+                  : "N/A"}
               </p>
             </div>
 
@@ -209,7 +211,9 @@ export default function AdminOrders() {
               <h2 style={{ margin: 0 }}>INVOICE</h2>
               <p style={{ margin: 0 }}>Order ID: {selectedOrder?.id}</p>
               <p style={{ margin: 0 }}>
-                Date: {new Date(selectedOrder?.date).toLocaleDateString()}
+                Date: {selectedOrder?.createdAt?.seconds
+                ? new Date(selectedOrder.createdAt.seconds * 1000).toLocaleDateString()
+                : "N/A"}
               </p>
             </div>
           </div>
