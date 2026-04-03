@@ -22,6 +22,7 @@ import Login from "../pages/public/Login.jsx";
 import Register from "../pages/public/Register.jsx";
 import AboutUs from "../pages/public/AboutUs.jsx";
 import ContactUs from "../pages/public/ContactUs.jsx";
+import SizeGuide from "../pages/public/SizeGuide.jsx";
 
 /* ACCOUNT PAGES */
 import Dashboard from "../pages/public/account/Dashboard.jsx";
@@ -59,6 +60,7 @@ export default function AppRoutes() {
         <Route path="/products/:id" element={<ProductDetails/>} />
         <Route path="/aboutUs" element={<AboutUs />} />
         <Route path="/contactUs" element={<ContactUs />} />
+        <Route path="/sizeGuide" element={<SizeGuide />} />
         <Route path="/no-results" element={<NoResults />} />
         <Route path="/cart" element={<CartPage />} />
 

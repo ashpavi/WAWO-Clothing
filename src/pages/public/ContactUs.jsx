@@ -1,6 +1,7 @@
 import { useState } from "react";
 
 import { submitContactMessage } from "../../firebase/services/messageService";
+import AboutHeroArtwork from "../../components/store/AboutHeroArtwork";
 
 const EmailIcon = ({ color }) => (
   <svg viewBox="0 0 24 24" className="w-9 h-9" fill="none">
@@ -15,16 +16,6 @@ const PhoneIcon = ({ color }) => (
   </svg>
 );
 
-const ChatIcon = ({ color }) => (
-  <svg viewBox="0 0 24 24" className="w-10 h-10" fill="none">
-    <rect x="2" y="2" width="15" height="12" rx="3" fill={color}/>
-    <circle cx="6.5" cy="8" r="1.2" fill="white"/>
-    <circle cx="9.5" cy="8" r="1.2" fill="white"/>
-    <circle cx="12.5" cy="8" r="1.2" fill="white"/>
-    <rect x="7" y="10" width="15" height="11" rx="3" fill={color} opacity="0.4"/>
-  </svg>
-);
-
 const LocationIcon = ({ color }) => (
   <svg viewBox="0 0 24 24" className="w-9 h-9" fill="none">
     <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z" fill={color}/>
@@ -36,45 +27,34 @@ const contactMethods = [
   {
     title: "Email Us",
     desc: "We'll respond within 24 hours",
-    value: "support@shopmodern.com",
-    bg: "bg-blue-50",
-    border: "border-blue-200",
-    iconBg: "bg-blue-100",
-    color: "#3b82f6",
-    text: "text-blue-600",
+    value: "wavoclothinglk@gmail.com",
+    bg: "bg-white",
+    border: "border-[#DCD2FF]",
+    iconBg: "bg-[#CFC1FF]",
+    color: "#7E6FE3",
+    text: "text-[#5E4EC5]",
     Icon: EmailIcon,
   },
   {
     title: "Call Us",
-    desc: "Mon–Fri, 9am to 6pm EST",
-    value: "+1 (800) 123-4567",
-    bg: "bg-green-50",
-    border: "border-green-200",
-    iconBg: "bg-green-100",
-    color: "#22c55e",
-    text: "text-green-600",
+    desc: "Mon-Sat, 9am to 6pm LKT",
+    value: "+94 76 535 8085",
+    bg: "bg-white",
+    border: "border-[#CFDBFF]",
+    iconBg: "bg-[#BDD0FF]",
+    color: "#4D77DB",
+    text: "text-[#345BB8]",
     Icon: PhoneIcon,
   },
   {
-    title: "Live Chat",
-    desc: "Available 24/7 for quick help",
-    value: "Start a conversation →",
-    bg: "bg-pink-50",
-    border: "border-pink-200",
-    iconBg: "bg-teal-100",
-    color: "#14b8a6",
-    text: "text-teal-600",
-    Icon: ChatIcon,
-  },
-  {
     title: "Visit Us",
-    desc: "Our headquarters",
-    value: "123 Commerce St, New York",
-    bg: "bg-yellow-50",
-    border: "border-yellow-200",
-    iconBg: "bg-yellow-100",
-    color: "#f59e0b",
-    text: "text-yellow-600",
+    desc: "Serving customers online",
+    value: "Available online, Sri Lanka.",
+    bg: "bg-white",
+    border: "border-[#E0D8FF]",
+    iconBg: "bg-[#D8CBFF]",
+    color: "#8A73E6",
+    text: "text-[#6A53CC]",
     Icon: LocationIcon,
   },
 ];
@@ -140,18 +120,25 @@ export default function ContactUs() {
     <div className="bg-gray-100 text-gray-900">
 
       {/* HERO */}
-      <section className="bg-gradient-to-br from-gray-900 via-blue-900 to-blue-800 text-white py-20 px-6 text-center">
-        <span className="bg-blue-500/20 border border-blue-400/30 px-4 py-1 rounded-full text-xs font-semibold uppercase tracking-wider">
-          Get in Touch
-        </span>
+      <section className="relative text-white py-20 px-6 text-center overflow-hidden">
+        <div className="absolute inset-0">
+          <AboutHeroArtwork/>
+        </div>
+        <div className="absolute inset-0 bg-black/15"/>
 
-        <h1 className="text-4xl md:text-5xl font-bold mt-6">
-          We'd love to <span className="text-blue-400">hear</span> from you
-        </h1>
+        <div className="relative">
+          <span className="bg-blue-500/20 border border-blue-400/30 px-4 py-1 rounded-full text-xs font-semibold uppercase tracking-wider">
+            Get in Touch
+          </span>
 
-        <p className="text-gray-300 mt-4 max-w-xl mx-auto">
-          Have a question or feedback? Our team is here to help.
-        </p>
+          <h1 className="text-4xl md:text-5xl font-bold mt-6">
+            We'd love to <span className="text-blue-400">hear</span> from you
+          </h1>
+
+          <p className="text-gray-300 mt-4 max-w-xl mx-auto">
+            Have a question or feedback? Our team is here to help.
+          </p>
+        </div>
       </section>
 
       {/* CONTACT CARDS */}
@@ -268,7 +255,7 @@ export default function ContactUs() {
                 <button
                   type="submit"
                   disabled={submitting}
-                  className="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition"
+                  className="w-full bg-[#3B82F6] text-white py-3 rounded-lg hover:bg-[#2563EB] transition"
                 >
                   {submitting ? "Sending..." : "Send Message →"}
                 </button>

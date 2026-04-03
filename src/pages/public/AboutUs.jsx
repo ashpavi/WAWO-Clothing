@@ -1,58 +1,406 @@
-import { useState } from "react";
+import { Fragment, useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import AboutHeroArtwork from "../../components/store/AboutHeroArtwork";
 
-const teamMembers = [
+const aboutSectionsStyles = `
+  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500&display=swap');
+
+  :root {
+    --purple: #4c1d95;
+    --purple-mid: #6d28d9;
+    --purple-light: #ede9fe;
+    --gold: #f59e0b;
+    --gold-light: #fef3c7;
+    --dark: #1a0a2e;
+    --text: #2d1b69;
+    --muted: #6b7280;
+    --white: #ffffff;
+    --off-white: #fafaf9;
+    --border: #e5e7eb;
+  }
+
+  .values-section {
+    padding: 88px 40px 40px;
+    background: var(--white);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .values-section::before {
+    content: '';
+    position: absolute;
+    top: -120px; left: -120px;
+    width: 400px; height: 400px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(109,40,217,0.08) 0%, transparent 70%);
+  }
+
+  .values-section::after {
+    content: '';
+    position: absolute;
+    bottom: -100px; right: -80px;
+    width: 350px; height: 350px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(245,158,11,0.08) 0%, transparent 70%);
+  }
+
+  .section-label {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 16px;
+    display: block;
+  }
+
+  .values-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(36px, 5vw, 58px);
+    font-weight: 700;
+    color: var(--dark);
+    line-height: 1.15;
+    margin-bottom: 16px;
+  }
+
+  .values-title em {
+    font-style: italic;
+    color: var(--gold);
+  }
+
+  .values-subtitle {
+    font-size: 16px;
+    color: var(--muted);
+    max-width: 420px;
+    line-height: 1.7;
+    margin-bottom: 64px;
+  }
+
+  .values-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 2px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .value-card {
+    padding: 40px 32px;
+    border: 1px solid var(--border);
+    background: #faf7ff;
+    transition: background 0.3s ease, transform 0.3s ease;
+    cursor: default;
+  }
+
+  .value-card:hover {
+    background: #f3ecff;
+    transform: translateY(-4px);
+  }
+
+  .value-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    background: rgba(245,158,11,0.15);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 24px;
+    font-size: 22px;
+  }
+
+  .value-name {
+    font-family: 'Playfair Display', serif;
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--dark);
+    margin-bottom: 12px;
+  }
+
+  .value-desc {
+    font-size: 14px;
+    color: #4b5563;
+    line-height: 1.75;
+  }
+
+  .value-number {
+    font-family: 'Playfair Display', serif;
+    font-size: 64px;
+    font-weight: 700;
+    color: rgba(109,40,217,0.12);
+    position: absolute;
+    top: 12px;
+    right: 20px;
+    line-height: 1;
+    pointer-events: none;
+    user-select: none;
+  }
+
+  .how-section {
+    padding: 56px 40px 100px;
+    background: var(--white);
+    position: relative;
+  }
+
+  .how-header {
+    text-align: center;
+    margin-bottom: 80px;
+  }
+
+  .how-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(32px, 4vw, 52px);
+    font-weight: 700;
+    color: var(--dark);
+    margin-bottom: 14px;
+  }
+
+  .how-title span {
+    color: var(--purple-mid);
+  }
+
+  .how-sub {
+    font-size: 16px;
+    color: var(--muted);
+    max-width: 400px;
+    margin: 0 auto;
+    line-height: 1.7;
+  }
+
+  .how-steps {
+    display: grid;
+    grid-template-columns: 1fr 60px 1fr 60px 1fr;
+    align-items: start;
+    max-width: 900px;
+    margin: 0 auto;
+    gap: 0;
+  }
+
+  .how-arrow {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-top: 40px;
+    color: var(--purple-light);
+    font-size: 28px;
+  }
+
+  .how-step {
+    text-align: center;
+    padding: 0 16px;
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+  }
+
+  .how-step.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .step-circle {
+    width: 88px;
+    height: 88px;
+    border-radius: 50%;
+    background: var(--purple-light);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 24px;
+    font-size: 32px;
+    position: relative;
+    transition: background 0.3s;
+  }
+
+  .how-step:hover .step-circle {
+    background: var(--purple-mid);
+  }
+
+  .step-num {
+    position: absolute;
+    top: -6px; right: -6px;
+    width: 26px; height: 26px;
+    border-radius: 50%;
+    background: var(--gold);
+    color: var(--dark);
+    font-size: 11px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .step-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--dark);
+    margin-bottom: 10px;
+  }
+
+  .step-desc {
+    font-size: 14px;
+    color: var(--muted);
+    line-height: 1.7;
+    max-width: 200px;
+    margin: 0 auto;
+  }
+
+  @media (max-width: 768px) {
+    .how-steps {
+      grid-template-columns: 1fr;
+      gap: 40px;
+    }
+    .how-arrow { display: none; }
+    .values-section { padding: 56px 24px 28px; }
+    .how-section { padding: 36px 24px 64px; }
+  }
+`;
+
+const values = [
   {
-    name: "Sarah Chen",
-    role: "Founder & CEO",
-    img: "https://randomuser.me/api/portraits/women/44.jpg",
-    bio: "Visionary behind our mission to simplify and elevate modern shopping.",
+    icon: "✦",
+    name: "Bold by Design",
+    desc: "We don't follow trends - we set them. Every piece is crafted to make you stand out, not blend in.",
   },
   {
-    name: "Marcus Rivera",
-    role: "Head of Design",
-    img: "https://randomuser.me/api/portraits/men/32.jpg",
-    bio: "Designing seamless experiences that delight millions of shoppers.",
+    icon: "♻",
+    name: "Consciously Made",
+    desc: "From fabric to finish, we choose materials and methods that respect both people and the planet.",
   },
   {
-    name: "Priya Nair",
-    role: "CTO",
-    img: "https://randomuser.me/api/portraits/women/68.jpg",
-    bio: "Building the technology powering our lightning-fast platform.",
+    icon: "◈",
+    name: "Radically Inclusive",
+    desc: "Fashion is for everybody. Our sizing, styling, and storytelling celebrate every shape and identity.",
   },
   {
-    name: "James Okafor",
-    role: "Head of Operations",
-    img: "https://randomuser.me/api/portraits/men/75.jpg",
-    bio: "Ensuring every order arrives smoothly and on time.",
+    icon: "◉",
+    name: "Built to Last",
+    desc: "Quality over quantity, always. We make clothes you'll reach for again and again, season after season.",
   },
 ];
 
-const stats = [
-  { value: "2.4M+", label: "Happy Customers" },
-  { value: "180+", label: "Countries Served" },
-  { value: "50K+", label: "Products Listed" },
-  { value: "99.2%", label: "Satisfaction Rate" },
+const steps = [
+  {
+    emoji: "🛍",
+    title: "Discover Your Style",
+    desc: "Browse curated collections built around your vibe, season, and budget.",
+  },
+  {
+    emoji: "📦",
+    title: "We Pack With Care",
+    desc: "Your order is hand-checked and eco-packed before it heads your way.",
+  },
+  {
+    emoji: "✨",
+    title: "Wear & Own It",
+    desc: "Delivered to your door. Loved from day one. Free returns, always.",
+  },
 ];
+
+function ValuesSection() {
+  return (
+    <section className="values-section">
+      <span className="section-label">What We Stand For</span>
+      <h2 className="values-title">
+        Clothing with a <em>purpose</em>
+      </h2>
+      <p className="values-subtitle">
+        WAWO was built on four pillars that guide every decision - from the thread we choose to the stories we tell.
+      </p>
+      <div className="values-grid">
+        {values.map((v, i) => (
+          <div className="value-card" key={i} style={{ position: "relative" }}>
+            <span className="value-number">{String(i + 1).padStart(2, "0")}</span>
+            <div className="value-icon">{v.icon}</div>
+            <div className="value-name">{v.name}</div>
+            <div className="value-desc">{v.desc}</div>
+          </div>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+function HowItWorksSection() {
+  const ref = useRef(null);
+  const [visible, setVisible] = useState(false);
+
+  useEffect(() => {
+    const obs = new IntersectionObserver(
+      ([e]) => {
+        if (e.isIntersecting) setVisible(true);
+      },
+      { threshold: 0.2 }
+    );
+
+    if (ref.current) obs.observe(ref.current);
+
+    return () => obs.disconnect();
+  }, []);
+
+  return (
+    <section className="how-section" ref={ref}>
+      <div className="how-header">
+        <span className="section-label" style={{ color: "var(--purple-mid)" }}>The WAWO Experience</span>
+        <h2 className="how-title">
+          Shopping made <span>effortless</span>
+        </h2>
+        <p className="how-sub">Three simple steps from discovery to your door.</p>
+      </div>
+      <div className="how-steps">
+        {steps.map((s, i) => (
+          <Fragment key={s.title}>
+            <div className={`how-step${visible ? " visible" : ""}`}>
+              <div className="step-circle">
+                <span>{s.emoji}</span>
+                <span className="step-num">{i + 1}</span>
+              </div>
+              <div className="step-title">{s.title}</div>
+              <div className="step-desc">{s.desc}</div>
+            </div>
+            {i < steps.length - 1 && <div className="how-arrow">→</div>}
+          </Fragment>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+function AboutSections() {
+  return (
+    <>
+      <style>{aboutSectionsStyles}</style>
+      <ValuesSection />
+      <HowItWorksSection />
+    </>
+  );
+}
 
 export default function AboutUs() {
-
-  const [activeTeam, setActiveTeam] = useState(null);
   const navigate = useNavigate();
 
   return (
     <div className="bg-white text-gray-900">
 
       {/* HERO */}
-      <section className="bg-gradient-to-br from-gray-900 via-blue-900 to-blue-800 text-white px-6 py-24 text-center">
-        <div className="max-w-3xl mx-auto">
+      <section className="relative bg-[#2A0A4A] text-white px-6 py-24 text-center overflow-hidden">
+
+        <div className="absolute inset-0 pointer-events-none" aria-hidden="true">
+          <AboutHeroArtwork className="h-full w-full" />
+        </div>
+
+        <div className="absolute inset-0 bg-[#2A0A4A]/60" />
+
+        <div className="relative max-w-3xl mx-auto">
 
           <span className="inline-block text-xs tracking-widest uppercase bg-blue-500/20 border border-blue-400/30 px-4 py-1 rounded-full mb-6">
             Our Story
           </span>
 
           <h1 className="text-4xl sm:text-5xl font-bold leading-tight">
-            Shopping <span className="text-blue-400">Reimagined</span>
+            Shopping <span className="text-[#4FA8FF]">Reimagined</span>
           </h1>
 
           <p className="mt-6 text-gray-300 text-base sm:text-lg">
@@ -64,180 +412,36 @@ export default function AboutUs() {
 
             <button
               onClick={() => navigate("/products")}
-              className="bg-blue-600 px-6 py-3 rounded-xl font-semibold hover:bg-blue-700 transition"
+              className="bg-[#7B6BEE] px-6 py-3 rounded-xl font-semibold hover:bg-[#8B7CF1] hover:shadow-[0_0_0_3px_rgba(255,255,255,0.14)] transition"
             >
               Explore Our Store
             </button>
 
-            <button
-              onClick={() =>
-                document.getElementById("team")
-                .scrollIntoView({ behavior: "smooth" })
-              }
-              className="border border-white/40 px-6 py-3 rounded-xl hover:bg-white/10 transition"
-            >
-              Meet the Team
-            </button>
-
           </div>
         </div>
       </section>
 
-
-      {/* STATS */}
-      <section className="bg-gradient-to-b from-gray-50 to-white py-20">
-
-        <div className="max-w-6xl mx-auto px-6">
-
-          <div className="text-center mb-14">
-            <h2 className="text-3xl font-bold">
-              Trusted by Millions
-            </h2>
-            <p className="text-gray-500 mt-3">
-              Our impact in numbers speaks for itself.
-            </p>
-          </div>
-
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
-
-            {stats.map((stat) => (
-
-              <div
-                key={stat.label}
-                className="group bg-white rounded-2xl p-8 text-center border border-gray-100 shadow-sm hover:shadow-xl hover:-translate-y-2 transition-all duration-300"
-              >
-
-                <p className="text-4xl font-bold bg-gradient-to-r from-blue-600 to-blue-400 bg-clip-text text-transparent">
-                  {stat.value}
-                </p>
-
-                <div className="w-12 h-1 bg-blue-600 mx-auto my-4 rounded-full group-hover:w-20 transition-all duration-300"/>
-
-                <p className="text-gray-500 text-sm tracking-wide">
-                  {stat.label}
-                </p>
-
-              </div>
-
-            ))}
-
-          </div>
-        </div>
-      </section>
-
-
-      {/* STORY */}
-      <section className="max-w-6xl mx-auto px-6 py-20 grid md:grid-cols-2 gap-16 items-center">
-
-        <div>
-
-          <h2 className="text-3xl font-bold mb-6">
-            From Startup to Global Marketplace
-          </h2>
-
-          <p className="text-gray-600 leading-relaxed mb-4">
-            What began as a small idea among friends has grown into
-            a trusted global platform serving millions worldwide.
-          </p>
-
-          <p className="text-gray-600 leading-relaxed">
-            Our goal has always been simple:
-            make quality products accessible with clarity and trust.
-          </p>
-
-        </div>
-
-        <div className="rounded-2xl overflow-hidden shadow-lg">
-
-          <img
-            src="https://images.unsplash.com/photo-1521791136064-7986c2920216?w=800"
-            alt="Store"
-            className="w-full h-72 object-cover"
-          />
-
-        </div>
-
-      </section>
-
-
-      {/* TEAM */}
-      <section id="team" className="bg-gray-50 py-20 px-6">
-
-        <div className="max-w-6xl mx-auto text-center mb-12">
-
-          <h2 className="text-3xl font-bold">
-            Meet Our Team
-          </h2>
-
-          <p className="text-gray-500 mt-4">
-            Passionate builders, designers, and thinkers behind the brand.
-          </p>
-
-        </div>
-
-        <div className="max-w-6xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-
-          {teamMembers.map((member) => (
-
-            <div
-              key={member.name}
-              onClick={() =>
-                setActiveTeam(activeTeam === member.name ? null : member.name)
-              }
-              className="bg-white border rounded-2xl p-6 hover:shadow-lg hover:-translate-y-1 transition cursor-pointer"
-            >
-
-              <div className="flex justify-center mb-4">
-
-                <img
-                  src={member.img}
-                  alt={member.name}
-                  className="w-24 h-24 rounded-full object-cover border"
-                />
-
-              </div>
-
-              <h3 className="font-semibold text-lg text-center">
-                {member.name}
-              </h3>
-
-              <p className="text-sm text-gray-500 text-center">
-                {member.role}
-              </p>
-
-              {activeTeam === member.name && (
-                <p className="text-sm text-gray-600 mt-4 text-center">
-                  {member.bio}
-                </p>
-              )}
-
-            </div>
-
-          ))}
-
-        </div>
-
-      </section>
+      <AboutSections />
 
 
       {/* CTA */}
-      <section className="bg-blue-600 text-white py-20 text-center px-6">
+      <section className="bg-[#3d1278]">
+        <div className="w-full bg-[#3d1278] text-white text-center px-6 py-12 sm:px-10 sm:py-16 shadow-[0_12px_40px_rgba(61,18,120,0.28)]">
+          <h2 className="text-3xl font-bold">
+            We're Just Getting Started
+          </h2>
 
-        <h2 className="text-3xl font-bold">
-          We're Just Getting Started
-        </h2>
+          <p className="mt-4 text-white/80">
+            Join us on our journey to redefine modern shopping.
+          </p>
 
-        <p className="mt-4 opacity-90">
-          Join us on our journey to redefine modern shopping.
-        </p>
-
-        <button
-          onClick={() => navigate("/products")}
-          className="mt-8 bg-white text-blue-600 px-8 py-3 rounded-xl font-semibold hover:bg-gray-200 transition"
-        >
-          Start Shopping →
-        </button>
-
+          <button
+            onClick={() => navigate("/products")}
+            className="mt-8 bg-[#7B6BEE] text-white px-8 py-3 rounded-xl font-semibold hover:bg-[#8B7CF1] transition"
+          >
+            Start Shopping →
+          </button>
+        </div>
       </section>
 
     </div>
