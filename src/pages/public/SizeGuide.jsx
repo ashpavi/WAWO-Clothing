@@ -1,300 +1,168 @@
-import { useMemo, useState } from "react";
-import { ArrowRightLeft, Ruler, Shirt, CircleHelp } from "lucide-react";
-import AboutHeroArtwork from "../../components/store/AboutHeroArtwork";
+import { useState } from "react";
+import hoodieImage from "../../assets/default-product.jpg";
+import tshirtImage from "../../assets/default-product.jpg";
 
-const tshirtData = {
-  label: "T-Shirts",
-  sizes: ["XS", "S", "M", "L", "XL", "2XL", "3XL"],
-  measurements: [
-    { label: "Length H.P.S", values: ["25¾", "26½", "27½", "28½", "29", "30", "31"] },
-    { label: "Chest", values: ["20", "21", "22", "23", "24", "25", "26"] },
-  ],
+const data = {
+  hoodie: {
+    "Length H.P.S": [27, 28, 29, 30, 31, 32, 33],
+    Chest: [21, 22, 23, 24.5, 26, 27.5, 29],
+  },
+  tshirt: {
+    "Length H.P.S": [25.75, 26.5, 27.5, 28.5, 29, 30, 31],
+    Chest: [20, 21, 22, 23, 24, 25, 26],
+  },
 };
 
-const hoodieData = {
-  label: "Hoodies",
-  sizes: ["XS", "S", "M", "L", "XL", "2XL", "3XL"],
-  measurements: [
-    { label: "Length", values: ["26", "27", "28", "29", "30", "31", "32"] },
-    { label: "Chest", values: ["22", "23", "24", "25", "26", "27", "28"] },
-  ],
-};
-
-const FRACTIONS = {
-  "¼": 0.25,
-  "½": 0.5,
-  "¾": 0.75,
-};
-
-function parseMeasurement(value) {
-  const raw = String(value).trim();
-  const numeric = parseFloat(raw.replace(/[^\d.]/g, ""));
-  const base = Number.isNaN(numeric) ? 0 : numeric;
-
-  let fractionValue = 0;
-  for (const [fractionChar, fractionNumber] of Object.entries(FRACTIONS)) {
-    if (raw.includes(fractionChar)) {
-      fractionValue += fractionNumber;
-    }
+function fmt(val, unit) {
+  if (unit === "in") {
+    const fmap = { 0.25: "1/4", 0.5: "1/2", 0.75: "3/4" };
+    const whole = Math.floor(val);
+    const frac = +(val - whole).toFixed(2);
+    return frac ? `${whole} ${fmap[frac] || frac}` : `${whole}`;
   }
-
-  return base + fractionValue;
+  return (val * 2.54).toFixed(1);
 }
 
-const TShirtSVG = () => (
-  <svg viewBox="0 0 280 300" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ width: "100%", maxWidth: 240 }}>
-    <path d="M55 58 L25 118 L70 132 L70 268 L210 268 L210 132 L255 118 L225 58 L188 76 Q140 96 92 76 Z" fill="#1e1e2e" stroke="#2a2a3e" strokeWidth="1.5" />
-    <path d="M55 58 L25 118 L70 132 L92 76 Z" fill="#15152a" stroke="#2a2a3e" strokeWidth="1.5" />
-    <path d="M225 58 L255 118 L210 132 L188 76 Z" fill="#15152a" stroke="#2a2a3e" strokeWidth="1.5" />
-    <path d="M92 76 Q140 102 188 76" stroke="#60a5fa" strokeWidth="1.5" fill="none" strokeLinecap="round" />
-    <line x1="80" y1="170" x2="200" y2="170" stroke="#3b82f6" strokeWidth="1.5" strokeDasharray="5 3" />
-    <polygon points="77,167 77,173 70,170" fill="#3b82f6" />
-    <polygon points="203,167 203,173 210,170" fill="#3b82f6" />
-    <text x="140" y="162" textAnchor="middle" fill="#3b82f6" fontSize="10" fontWeight="700" fontFamily="DM Sans, sans-serif">CHEST</text>
-    <line x1="150" y1="88" x2="150" y2="258" stroke="#f59e0b" strokeWidth="1.5" strokeDasharray="5 3" />
-    <polygon points="147,85 153,85 150,78" fill="#f59e0b" />
-    <polygon points="147,261 153,261 150,268" fill="#f59e0b" />
-    <text x="165" y="185" fill="#f59e0b" fontSize="10" fontWeight="700" fontFamily="DM Sans, sans-serif" transform="rotate(90,165,185)">LENGTH H.P.S</text>
-  </svg>
-);
-
-const HoodieSVG = () => (
-  <svg viewBox="0 0 300 340" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ width: "100%", maxWidth: 240 }}>
-    <path d="M72 122 L72 288 L228 288 L228 122 Z" fill="#1e1e2e" stroke="#2a2a3e" strokeWidth="1.5" />
-    <path d="M72 122 L28 134 L28 252 L72 252 Z" fill="#15152a" stroke="#2a2a3e" strokeWidth="1.5" />
-    <path d="M228 122 L272 134 L272 252 L228 252 Z" fill="#15152a" stroke="#2a2a3e" strokeWidth="1.5" />
-    <rect x="26" y="248" width="46" height="11" rx="3" fill="#0f0f1e" stroke="#2a2a3e" strokeWidth="1.2" />
-    <rect x="228" y="248" width="46" height="11" rx="3" fill="#0f0f1e" stroke="#2a2a3e" strokeWidth="1.2" />
-    <rect x="70" y="284" width="160" height="11" rx="3" fill="#0f0f1e" stroke="#2a2a3e" strokeWidth="1.2" />
-    <path d="M96 76 Q88 38 150 28 Q212 38 204 76" fill="#15152a" stroke="#2a2a3e" strokeWidth="1.5" />
-    <path d="M104 78 Q98 52 150 44 Q202 52 196 78" fill="#0f0f1e" stroke="#2a2a3e" strokeWidth="1.2" />
-    <line x1="138" y1="78" x2="133" y2="205" stroke="#2a2a3e" strokeWidth="1.2" />
-    <line x1="162" y1="78" x2="167" y2="205" stroke="#2a2a3e" strokeWidth="1.2" />
-    <path d="M102 210 Q102 205 110 205 L190 205 Q198 205 198 210 L198 278 L102 278 Z" fill="#15152a" stroke="#2a2a3e" strokeWidth="1.2" />
-    <line x1="82" y1="162" x2="218" y2="162" stroke="#3b82f6" strokeWidth="1.5" strokeDasharray="5 3" />
-    <polygon points="79,159 79,165 72,162" fill="#3b82f6" />
-    <polygon points="221,159 221,165 228,162" fill="#3b82f6" />
-    <text x="150" y="154" textAnchor="middle" fill="#3b82f6" fontSize="10" fontWeight="700" fontFamily="DM Sans, sans-serif">CHEST</text>
-    <line x1="244" y1="76" x2="244" y2="288" stroke="#f59e0b" strokeWidth="1.5" strokeDasharray="5 3" />
-    <polygon points="241,73 247,73 244,66" fill="#f59e0b" />
-    <polygon points="241,291 247,291 244,298" fill="#f59e0b" />
-    <text x="257" y="200" fill="#f59e0b" fontSize="10" fontWeight="700" fontFamily="DM Sans, sans-serif" transform="rotate(90,257,200)">LENGTH</text>
-  </svg>
-);
-
-export default function SizeGuide() {
-  const [activeTab, setActiveTab] = useState("tshirt");
-  const [hoveredCol, setHoveredCol] = useState(null);
+export default function SizeChart() {
+  const [tab, setTab] = useState("hoodie");
   const [unit, setUnit] = useState("in");
 
-  const data = useMemo(
-    () => (activeTab === "tshirt" ? tshirtData : hoodieData),
-    [activeTab],
-  );
-
-  const displayValue = (value) => {
-    if (unit === "cm") {
-      return (parseMeasurement(value) * 2.54).toFixed(1);
-    }
-    return value;
-  };
+  const unitLabel = unit === "in" ? "inches" : "centimeters";
+  const tableData = data[tab];
+  const sizes = ["XS", "S", "M", "L", "XL", "2XL", "3XL"];
 
   return (
-    <div className="bg-[#f5f5f8] text-[#1a1a2e] min-h-screen">
-      <section className="relative overflow-hidden bg-[#2a0a4a] px-6 py-14 md:px-10 md:py-16">
-        <div className="absolute inset-0">
-          <AboutHeroArtwork />
+    <div style={s.body}>
+      {/* Wave BG */}
+      <svg style={s.waves} viewBox="0 0 1200 500" preserveAspectRatio="xMidYMid slice">
+        <path d="M0,200 C200,100 400,300 600,200 C800,100 1000,300 1200,200" stroke="#7c3aed" strokeWidth="1.5" fill="none" opacity="0.3"/>
+        <path d="M0,280 C200,180 400,370 600,270 C800,170 1000,360 1200,270" stroke="#7c3aed" strokeWidth="1" fill="none" opacity="0.2"/>
+        <path d="M0,150 C200,60 400,240 600,150 C800,60 1000,240 1200,150" stroke="#9b59b6" strokeWidth="0.8" fill="none" opacity="0.15"/>
+        <circle cx="100" cy="90" r="5" fill="none" stroke="#7c3aed" strokeWidth="1.5" opacity="0.5"/>
+        <circle cx="1100" cy="70" r="5" fill="none" stroke="#7c3aed" strokeWidth="1.5" opacity="0.4"/>
+      </svg>
+
+      {/* Hero */}
+      <div style={s.hero}>
+        <div style={s.brand}>
+          SIZE <span style={{ color: "#7c3aed" }}>Guide</span>
         </div>
-        <div className="absolute inset-0 bg-[#22083d]/45" />
+        <p style={s.subtitle}>
+          Use the illustrations below to understand where chest and length are measured, then match your size using the chart.
+        </p>
+      </div>
 
-        <div className="max-w-6xl mx-auto relative z-10">
-          <span className="inline-flex items-center gap-2 rounded-full border border-blue-400/35 bg-blue-500/15 px-4 py-1 text-xs font-bold uppercase tracking-[0.18em] text-blue-200">
-            Find Your Perfect Fit
-          </span>
-          <h1 className="mt-4 text-4xl font-bold leading-tight text-white md:text-6xl">
-            Size <span className="text-blue-400">Guide</span>
-          </h1>
-          <p className="mt-3 max-w-xl text-sm leading-7 text-[#8888aa] md:text-base">
-            All measurements are taken flat. Chest is measured as half chest. Double the value for full circumference.
-          </p>
-        </div>
-      </section>
+      {/* Card */}
+      <div style={s.card}>
 
-      <section className="max-w-6xl mx-auto px-4 py-10 md:px-6 md:py-12">
-        <div className="mb-8 flex flex-wrap items-center justify-between gap-3">
-          <div className="flex gap-1 rounded-xl border border-[#e0e0ea] bg-white p-1">
-            <button
-              type="button"
-              onClick={() => setActiveTab("tshirt")}
-              className={`rounded-lg px-6 py-2 text-sm font-semibold transition ${
-                activeTab === "tshirt"
-                  ? "bg-blue-500 text-white shadow"
-                  : "text-[#9999aa] hover:bg-blue-50 hover:text-blue-500"
-              }`}
-            >
-              T-Shirts
+        {/* Tabs */}
+        <div style={s.tabs}>
+          {["hoodie", "tshirt"].map((t) => (
+            <button key={t} onClick={() => setTab(t)}
+              style={{ ...s.tab, ...(tab === t ? s.tabOn : {}) }}>
+              {t === "hoodie" ? "Hoodie" : "T-Shirt"}
             </button>
-            <button
-              type="button"
-              onClick={() => setActiveTab("hoodie")}
-              className={`rounded-lg px-6 py-2 text-sm font-semibold transition ${
-                activeTab === "hoodie"
-                  ? "bg-blue-500 text-white shadow"
-                  : "text-[#9999aa] hover:bg-blue-50 hover:text-blue-500"
-              }`}
-            >
-              Hoodies
-            </button>
-          </div>
-
-          <div className="flex items-center gap-2">
-            <span className="text-xs font-bold uppercase tracking-[0.1em] text-[#aaaabc]">Unit:</span>
-            <button
-              type="button"
-              onClick={() => setUnit("in")}
-              className={`rounded-lg border px-4 py-2 text-sm font-bold transition ${
-                unit === "in"
-                  ? "border-blue-500 bg-blue-50 text-blue-500"
-                  : "border-[#e0e0ea] bg-white text-[#9999aa]"
-              }`}
-            >
-              Inches
-            </button>
-            <button
-              type="button"
-              onClick={() => setUnit("cm")}
-              className={`rounded-lg border px-4 py-2 text-sm font-bold transition ${
-                unit === "cm"
-                  ? "border-blue-500 bg-blue-50 text-blue-500"
-                  : "border-[#e0e0ea] bg-white text-[#9999aa]"
-              }`}
-            >
-              CM
-            </button>
-          </div>
+          ))}
         </div>
 
-        <div className="space-y-6">
-          <div className="grid gap-6 md:grid-cols-2">
-            <div className="rounded-3xl border border-[#e8e8ee] bg-white p-6 text-center shadow-sm">
-              <p className="mb-5 text-xs font-bold uppercase tracking-[0.18em] text-[#8f8f9f]">Measurement Points - T-Shirt</p>
-              <div className="flex justify-center"><TShirtSVG /></div>
-              <div className="mt-5 flex flex-wrap justify-center gap-6 text-sm font-semibold text-[#2f3850]">
-                <div className="flex items-center gap-2"><span className="h-0.5 w-8 rounded bg-blue-500" />Chest</div>
-                <div className="flex items-center gap-2"><span className="h-0.5 w-8 rounded bg-amber-500" />Length</div>
-              </div>
-            </div>
-
-            <div className="rounded-3xl border border-[#e8e8ee] bg-white p-6 text-center shadow-sm">
-              <p className="mb-5 text-xs font-bold uppercase tracking-[0.18em] text-[#8f8f9f]">Measurement Points - Hoodie</p>
-              <div className="flex justify-center"><HoodieSVG /></div>
-              <div className="mt-5 flex flex-wrap justify-center gap-6 text-sm font-semibold text-[#2f3850]">
-                <div className="flex items-center gap-2"><span className="h-0.5 w-8 rounded bg-blue-500" />Chest</div>
-                <div className="flex items-center gap-2"><span className="h-0.5 w-8 rounded bg-amber-500" />Length</div>
-              </div>
-            </div>
-          </div>
-
-          <div className="overflow-hidden rounded-2xl border border-[#e8e8ee] bg-white shadow-sm">
-            <div className="flex items-center gap-2 border-b border-[#f0f0f6] bg-[#fffbf0] px-5 py-3">
-              <span className="text-sm">⚠️</span>
-              <p className="text-xs font-bold uppercase tracking-[0.07em] text-amber-600">
-                All measurements in {unit === "in" ? "inches (in)" : "centimeters (cm)"}
-              </p>
-            </div>
-
-            <div className="overflow-x-auto">
-              <table className="w-full border-collapse">
-                <thead>
-                  <tr className="border-b-2 border-[#eeeef5]">
-                    <th className="bg-[#fafafa] px-4 py-3 text-left text-xs font-bold uppercase tracking-[0.1em] text-[#555570]">Measurement</th>
-                    {data.sizes.map((size, index) => (
-                      <th
-                        key={size}
-                        className={`min-w-14 cursor-default px-4 py-3 text-center text-xs font-bold uppercase tracking-[0.1em] ${
-                          hoveredCol === index ? "bg-blue-50 text-blue-500" : "bg-[#fafafa] text-[#9999aa]"
-                        }`}
-                        onMouseEnter={() => setHoveredCol(index)}
-                        onMouseLeave={() => setHoveredCol(null)}
-                      >
-                        {size}
-                      </th>
-                    ))}
-                  </tr>
-                </thead>
-                <tbody>
-                  {data.measurements.map((row, rowIndex) => (
-                    <tr key={row.label} className={rowIndex % 2 === 0 ? "bg-white" : "bg-[#fafafa]"}>
-                      <td className="px-4 py-3 text-left text-sm font-semibold text-[#555570]">{row.label}</td>
-                      {row.values.map((value, colIndex) => (
-                        <td
-                          key={`${row.label}-${value}`}
-                          className={`cursor-default px-4 py-3 text-center text-base font-bold ${
-                            hoveredCol === colIndex ? "bg-blue-50 text-blue-500" : "text-[#1a1a2e]"
-                          }`}
-                          onMouseEnter={() => setHoveredCol(colIndex)}
-                          onMouseLeave={() => setHoveredCol(null)}
-                        >
-                          {displayValue(value)}
-                        </td>
-                      ))}
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-
-            <div className="border-t border-[#f0f0f6] bg-[#fafafa] px-5 py-3 text-xs text-[#aaaabc]">
-              Hover any size column to highlight measurements across all rows.
-            </div>
-          </div>
-        </div>
-
-        <div className="mt-12">
-          <h2 className="text-3xl font-extrabold tracking-tight text-[#1a1a2e]">How To <span className="text-[#4FA8FF]">Measure</span></h2>
-          <p className="mt-2 text-sm text-[#8888a0]">Use a flexible measuring tape. Keep it snug, not tight.</p>
-
-          <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            {[
-              {
-                icon: Shirt,
-                title: "Chest",
-                desc: "Wrap the tape around the fullest part of your chest, just under your arms. Keep it level all around.",
-              },
-              {
-                icon: Ruler,
-                title: "Length H.P.S",
-                desc: "Measure from the highest point of your shoulder straight down to the bottom hem.",
-              },
-              {
-                icon: ArrowRightLeft,
-                title: "Between Sizes?",
-                desc: "Choose one size up for relaxed fit. Size down only for a tighter fit.",
-              },
-              {
-                icon: CircleHelp,
-                title: "Need Help?",
-                desc: "DM us on Instagram @wavoclothing.store and we will help pick your best fit.",
-              },
-            ].map((tip) => (
-              <article key={tip.title} className="rounded-2xl border border-[#e8e8ee] bg-white p-5 shadow-sm transition hover:border-blue-500/40 hover:shadow">
-                <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-xl bg-blue-50 text-blue-600">
-                  <tip.icon size={20} strokeWidth={2.2} />
-                </div>
-                <h3 className="text-xs font-bold uppercase tracking-[0.08em] text-[#1a1a2e]">{tip.title}</h3>
-                <p className="mt-2 text-sm leading-6 text-[#8888a0]">{tip.desc}</p>
-              </article>
+        {/* Unit row */}
+        <div style={s.unitRow}>
+          <span style={s.unitLbl}>Select Unit</span>
+          <div style={s.toggle}>
+            {["in", "cm"].map((u) => (
+              <button key={u} onClick={() => setUnit(u)}
+                style={{ ...s.tbtn, ...(unit === u ? s.tbtnOn : {}) }}>
+                {u === "in" ? "INCHES" : "CM"}
+              </button>
             ))}
           </div>
+        </div>
 
-          <div className="mt-6 rounded-2xl border border-blue-200 bg-gradient-to-r from-blue-50 to-cyan-50 px-6 py-5">
-            <p className="text-sm font-bold text-blue-900">Important Note</p>
-            <p className="mt-1 text-sm leading-6 text-blue-600">
-              Measurements are garment measurements taken flat, not body measurements. Double chest values for full circumference.
-            </p>
+        {/* Content */}
+        <div style={s.panel}>
+          <div style={s.inner}>
+
+            {/* Diagram */}
+            <div style={s.dCol}>
+              <div style={s.dLbl}>{tab === "hoodie" ? "Hoodie" : "T-Shirt"} Measurement</div>
+              <div style={s.dTitle}>{tab === "hoodie" ? "Hoodie" : "T-Shirt"} Size Chart</div>
+              <div style={s.dSub}>All measurements in {unitLabel}.</div>
+              <div style={s.dImgBox}>
+                <img
+                  src={tab === "hoodie" ? hoodieImage : tshirtImage}
+                  alt={tab === "hoodie" ? "Hoodie measurement reference" : "T-shirt measurement reference"}
+                  style={s.dImg}
+                />
+              </div>
+            </div>
+
+            {/* Table */}
+            <div style={s.tCol}>
+              <div style={s.tBox}>
+                <div style={s.tHead}>
+                  <div style={s.mpLbl}>Measurement Points</div>
+                  <div style={s.mpSub}>Size chart in {unitLabel}</div>
+                </div>
+                <table style={s.table}>
+                  <thead>
+                    <tr style={{ background: "#f7f4fd" }}>
+                      <th style={{ ...s.th, textAlign: "left" }}>Measurement</th>
+                      {sizes.map((sz) => <th key={sz} style={s.th}>{sz}</th>)}
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {Object.entries(tableData).map(([label, vals]) => (
+                      <tr key={label}>
+                        <td style={{ ...s.td, textAlign: "left", color: "#1a0a2e", fontWeight: 600 }}>{label}</td>
+                        {vals.map((v, i) => <td key={i} style={s.td}>{fmt(v, unit)}</td>)}
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+                <div style={s.tFoot}>All measurements in {unitLabel}.</div>
+              </div>
+            </div>
+
           </div>
         </div>
-      </section>
+      </div>
+
+      <div style={s.footer}>www.wavoclothing.store</div>
     </div>
   );
 }
+
+const s = {
+  body: { background: "#1a0a2e", backgroundImage: "radial-gradient(ellipse 80% 60% at 50% -10%, #3b1a6e 0%, transparent 70%)", minHeight: "100vh", display: "flex", flexDirection: "column", alignItems: "center", padding: "48px 16px", fontFamily: "sans-serif", position: "relative" },
+  waves: { position: "fixed", inset: 0, width: "100%", height: "100%", pointerEvents: "none", zIndex: 0 },
+  hero: { width: "100%", maxWidth: 1040, marginBottom: 32, position: "relative", zIndex: 1 },
+  brand: { fontFamily: "Impact, sans-serif", fontSize: 52, letterSpacing: 6, color: "#fff", lineHeight: 1 },
+  subtitle: { fontSize: 15, color: "#a89dc0", marginTop: 8, lineHeight: 1.6, maxWidth: 620 },
+  card: { background: "rgba(255,255,255,0.97)", borderRadius: 16, width: "100%", maxWidth: 1040, overflow: "hidden", boxShadow: "0 20px 50px rgba(0,0,0,0.4)", position: "relative", zIndex: 1 },
+  tabs: { display: "flex", background: "#f4f0ff", borderBottom: "1px solid #e0d8f0" },
+  tab: { flex: 1, padding: "18px", background: "none", border: "none", borderBottom: "3px solid transparent", color: "#9980c0", fontSize: 13, letterSpacing: 2, textTransform: "uppercase", fontWeight: 700, cursor: "pointer", marginBottom: -1 },
+  tabOn: { color: "#7c3aed", borderBottomColor: "#7c3aed", background: "#fff" },
+  unitRow: { display: "flex", alignItems: "center", justifyContent: "space-between", padding: "16px 24px", borderBottom: "1px solid #ede8f8", background: "#fdfcff" },
+  unitLbl: { fontSize: 12, letterSpacing: 2, textTransform: "uppercase", color: "#9980c0", fontWeight: 700 },
+  toggle: { display: "flex", background: "#ede8f8", borderRadius: 8, padding: 4, gap: 4 },
+  tbtn: { padding: "8px 18px", background: "none", border: "none", color: "#9980c0", fontSize: 13, fontWeight: 700, cursor: "pointer", borderRadius: 6 },
+  tbtnOn: { background: "#f0a500", color: "#fff" },
+  panel: { padding: "28px 28px 32px" },
+  inner: { display: "flex", gap: 32, alignItems: "flex-start", flexWrap: "wrap" },
+  dCol: { flex: "0 0 280px", minWidth: 220 },
+  dLbl: { fontSize: 12, letterSpacing: 2, textTransform: "uppercase", color: "#9980c0", fontWeight: 700, marginBottom: 8 },
+  dTitle: { fontSize: 28, fontWeight: 700, color: "#1a0a2e", marginBottom: 4 },
+  dSub: { fontSize: 14, color: "#9980c0", marginBottom: 14 },
+  dImgBox: { background: "#ede8fa", borderRadius: 12, display: "flex", alignItems: "center", justifyContent: "center", padding: 20 },
+  dImg: { width: "100%", maxWidth: 300, height: "auto", borderRadius: 8, objectFit: "cover" },
+  tCol: { flex: 1, minWidth: 380 },
+  tBox: { border: "1px solid #e8e0f8", borderRadius: 12, overflow: "hidden" },
+  tHead: { background: "#fef9ec", borderBottom: "1px solid #e8e0f8", padding: "14px 18px" },
+  mpLbl: { fontSize: 12, letterSpacing: 2, textTransform: "uppercase", color: "#f0a500", fontWeight: 700, marginBottom: 4 },
+  mpSub: { fontSize: 14, color: "#666" },
+  table: { width: "100%", borderCollapse: "collapse", fontSize: 15 },
+  th: { padding: "12px 10px", textAlign: "center", fontSize: 12, letterSpacing: 1.2, textTransform: "uppercase", color: "#1a0a2e", fontWeight: 700, borderBottom: "1px solid #e8e0f8" },
+  td: { padding: "14px 10px", textAlign: "center", borderBottom: "1px solid #f0ecfa", color: "#444", fontSize: 15 },
+  tFoot: { padding: "12px 18px", fontSize: 13, color: "#9980c0", borderTop: "1px solid #e8e0f8", background: "#fdfcff" },
+  footer: { marginTop: 24, fontSize: 10, letterSpacing: 2, color: "rgba(255,255,255,0.25)", textTransform: "uppercase", position: "relative", zIndex: 1 },
+};
