@@ -28,6 +28,7 @@ const contactMethods = [
     title: "Email Us",
     desc: "We'll respond within 24 hours",
     value: "wavoclothinglk@gmail.com",
+    href: "https://mail.google.com/mail/?view=cm&fs=1&to=wavoclothinglk@gmail.com",
     bg: "bg-white",
     border: "border-[#DCD2FF]",
     iconBg: "bg-[#CFC1FF]",
@@ -39,6 +40,7 @@ const contactMethods = [
     title: "Call Us",
     desc: "Mon-Sat, 9am to 6pm LKT",
     value: "+94 76 535 8085",
+    href: "tel:+94765358085",
     bg: "bg-white",
     border: "border-[#CFDBFF]",
     iconBg: "bg-[#BDD0FF]",
@@ -143,13 +145,18 @@ export default function ContactUs() {
 
       {/* CONTACT CARDS */}
       <section className="max-w-6xl mx-auto px-6 py-16">
-        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
 
-          {contactMethods.map(({ title, desc, value, bg, border, iconBg, color, text, Icon }) => (
+          {contactMethods.map(({ title, desc, value, href, bg, border, iconBg, color, text, Icon }) => {
+            const CardTag = href ? "a" : "div";
 
-            <div
+            return (
+            <CardTag
               key={title}
-              className={`${bg} ${border} border rounded-2xl p-6 shadow-sm hover:shadow-xl hover:-translate-y-1 transition duration-300`}
+              href={href}
+              target={href?.startsWith("http") ? "_blank" : undefined}
+              rel={href?.startsWith("http") ? "noreferrer noopener" : undefined}
+              className={`${bg} ${border} border rounded-2xl p-6 shadow-sm hover:shadow-xl hover:-translate-y-1 transition duration-300 ${href ? "cursor-pointer block" : ""}`}
             >
 
               <div className={`${iconBg} w-14 h-14 rounded-full flex items-center justify-center mb-4`}>
@@ -166,8 +173,9 @@ export default function ContactUs() {
                 {value}
               </p>
 
-            </div>
-          ))}
+            </CardTag>
+            );
+          })}
 
         </div>
       </section>
