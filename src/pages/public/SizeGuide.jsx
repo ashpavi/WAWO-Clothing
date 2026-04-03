@@ -1,6 +1,6 @@
 import { useState } from "react";
-import hoodieImage from "../../assets/default-product.jpg";
-import tshirtImage from "../../assets/default-product.jpg";
+import hoodieImage from "../../assets/hoody-size.png";
+import tshirtImage from "../../assets/tshirt-size.png";
 
 const data = {
   hoodie: {
