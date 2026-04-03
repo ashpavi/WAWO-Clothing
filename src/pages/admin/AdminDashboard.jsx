@@ -162,8 +162,7 @@ export default function AdminDashboard() {
 
       {/* ================= STAT CARDS ================= */}
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-6 gap-6">
-
+      <div className="grid grid-cols-3 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-6 gap-3 sm:gap-4">
         <StatCard icon={<FaDollarSign />} title="Total Revenue" value={formatPrice(revenue)} />
         <StatCard icon={<FaShoppingCart />} title="Total Orders" value={orders.length} />
         <StatCard icon={<FaTruck />} title="Processing Orders" value={processingOrders} />
@@ -244,16 +243,22 @@ export default function AdminDashboard() {
 
 function StatCard({ icon, title, value }) {
   return (
-    <div className="bg-white rounded-2xl p-6 shadow-md hover:shadow-lg transition">
-      <div className="flex items-center justify-between mb-6">
-        <div className="bg-blue-50 p-3 rounded-xl text-blue-600 text-lg">
+    <div className="bg-white rounded-xl p-4 sm:p-5 shadow-sm hover:shadow-md transition">
+
+      {/* ICON */}
+      <div className="flex items-center justify-between mb-3 sm:mb-4">
+        <div className="bg-blue-50 p-2 sm:p-3 rounded-lg text-blue-600 text-base sm:text-lg">
           {icon}
         </div>
       </div>
 
-      <p className="text-sm text-gray-500">{title}</p>
+      {/* TITLE */}
+      <p className="text-xs sm:text-sm text-gray-500">
+        {title}
+      </p>
 
-      <p className="text-3xl font-semibold text-gray-900 mt-1">
+      {/* VALUE */}
+      <p className="text-lg sm:text-2xl font-semibold text-gray-900 mt-1">
         {value}
       </p>
     </div>

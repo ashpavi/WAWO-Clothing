@@ -18,7 +18,7 @@ export default function AdminSideBar({ isOpen, setIsOpen }) {
   const navigate = useNavigate();
   const { logoutUser } = useAuth();
 
-  const linkStyle =
+  const linkStyle = 
     "flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all duration-200";
 
   /* ================= LOGOUT ================= */

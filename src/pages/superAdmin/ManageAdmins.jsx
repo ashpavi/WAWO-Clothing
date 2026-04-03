@@ -67,7 +67,7 @@ export default function ManageAdmins() {
 
     try {
 
-      // ✅ Create user using secondary auth (IMPORTANT)
+      // Create user using secondary auth (IMPORTANT)
       const userCredential = await createUserWithEmailAndPassword(
         secondaryAuth,
         newAdmin.email,
@@ -76,7 +76,7 @@ export default function ManageAdmins() {
 
       const user = userCredential.user;
 
-      // ✅ Save in Firestore
+      // Save in Firestore
       await setDoc(doc(db, "users", user.uid), {
         uid: user.uid,
         name: newAdmin.name,
