@@ -57,7 +57,7 @@ export default function HomePage() {
       {/* CATEGORY SECTION */}
       <section>
 
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto  px-4 sm:px-6 lg:px-8">
 
           <h2 className="text-xl sm:text-2xl font-bold mb-8">
             Shop By Category
@@ -80,7 +80,7 @@ export default function HomePage() {
                 <img
                   src={category.image}
                   alt={category.name}
-                  className="w-full h-44 object-cover
+                  className="w-full h-55 object-cover
                             transition-transform duration-500
                             group-hover:scale-110"
                 />

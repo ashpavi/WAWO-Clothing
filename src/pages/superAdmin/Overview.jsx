@@ -78,24 +78,22 @@ export default function Overview() {
   }, []);
 
   return (
-
     <div className="space-y-10">
 
       {/* ================= HEADER ================= */}
-      <div className="flex justify-between items-center flex-wrap gap-4">
+      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 bg-gradient-to-r from-blue-50 to-indigo-50 p-6 rounded-2xl">
 
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">
+          <h1 className="text-3xl font-semibold text-gray-900">
             Super Admin Dashboard
           </h1>
-          <p className="text-gray-500 text-sm">
+
+          <p className="text-gray-500 text-sm mt-1">
             Monitor your platform activity
           </p>
         </div>
 
-        {/* ✅ FIXED DATE TIME (same as admin) */}
         <div className="bg-white border rounded-xl px-4 py-3 shadow-sm text-right">
-
           <p className="text-sm text-gray-500">
             {formattedDate}
           </p>
@@ -103,13 +101,12 @@ export default function Overview() {
           <p className="text-lg font-semibold text-gray-900">
             {formattedTime}
           </p>
-
         </div>
 
       </div>
 
       {/* ================= STATS ================= */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
 
         <StatCard
           icon={<FaDollarSign className="text-green-600" />}
@@ -141,10 +138,10 @@ export default function Overview() {
 
       </div>
 
-      {/* ================= ROW ================= */}
+      {/* ================= CONTENT ROW ================= */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
 
-        {/* RECENT ADMINS */}
+        {/* ================= RECENT ADMINS ================= */}
         <div className="bg-white p-6 rounded-2xl shadow-md hover:shadow-lg transition">
 
           <div className="flex justify-between items-center mb-5">
@@ -190,14 +187,15 @@ export default function Overview() {
 
         </div>
 
-        {/* ACTIVITY LOG */}
+        {/* ================= ACTIVITY LOG ================= */}
         <div className="bg-white p-6 rounded-2xl shadow-md hover:shadow-lg transition">
 
           <h2 className="font-semibold text-gray-800 mb-5">
             Activity Logs
           </h2>
 
-          <div className="space-y-3 text-sm max-h-72 overflow-y-auto pr-2 custom-scroll">
+          <div className="space-y-3 text-sm max-h-72 overflow-y-auto pr-2">
+
             {recentAdmins.map((admin, index) => (
 
               <div
@@ -218,6 +216,7 @@ export default function Overview() {
               </div>
 
             ))}
+
           </div>
 
         </div>
@@ -232,21 +231,26 @@ export default function Overview() {
 
 function StatCard({ icon, title, value, color }) {
   return (
-    <div className="bg-white p-6 rounded-2xl shadow-sm border hover:shadow-md transition flex items-center justify-between">
+    <div className="bg-white rounded-xl p-4 sm:p-5 shadow-sm hover:shadow-md transition">
 
-      <div>
-        <p className="text-sm text-gray-500">{title}</p>
-        <p className="text-2xl font-semibold text-gray-900 mt-1">
-          {value}
-        </p>
-      </div>
-
-      <div className={`p-3 rounded-xl ${color}`}>
-        <div className="text-lg">
-          {icon}
+      {/* ICON */}
+      <div className="flex items-center justify-between mb-3 sm:mb-4">
+        <div className={`p-2 sm:p-3 rounded-lg ${color}`}>
+          <div className="text-base sm:text-lg">
+            {icon}
+          </div>
         </div>
       </div>
 
+      {/* TITLE */}
+      <p className="text-xs sm:text-sm text-gray-500">
+        {title}
+      </p>
+
+      {/* VALUE */}
+      <p className="text-lg sm:text-2xl font-semibold text-gray-900 mt-1">
+        {value}
+      </p>
     </div>
   );
 }
