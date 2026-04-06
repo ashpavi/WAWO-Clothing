@@ -7,7 +7,13 @@ import {
 } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import { db } from "../../firebase/firebaseConfig";
-import { collection, getDocs } from "firebase/firestore";
+import {
+  collection,
+  getDocs,
+  query,
+  orderBy,
+  limit
+} from "firebase/firestore";
 
 export default function Overview() {
 
@@ -19,6 +25,7 @@ export default function Overview() {
   });
 
   const [recentAdmins, setRecentAdmins] = useState([]);
+  const [activityLogs, setActivityLogs] = useState([]);
   const [currentTime, setCurrentTime] = useState(new Date());
 
   /* ================= LIVE TIME ================= */
@@ -29,7 +36,6 @@ export default function Overview() {
     return () => clearInterval(timer);
   }, []);
 
-  /* ================= FORMAT DATE ================= */
   const formattedDate = currentTime.toLocaleDateString("en-GB", {
     weekday: "long",
     year: "numeric",
@@ -38,6 +44,43 @@ export default function Overview() {
   });
 
   const formattedTime = currentTime.toLocaleTimeString();
+
+  /* ================= FORMAT DATE ================= */
+  const formatDateTime = (timestamp) => {
+    if (!timestamp?.toDate) return "—";
+
+    const date = timestamp.toDate();
+
+    return date.toLocaleString("en-GB", {
+      day: "2-digit",
+      month: "short",
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+    });
+  };
+
+  const timeAgo = (timestamp) => {
+    if (!timestamp?.toDate) return "";
+
+    const now = new Date();
+    const diff = Math.floor((now - timestamp.toDate()) / 1000);
+
+    if (diff < 60) return "Just now";
+    if (diff < 3600) return `${Math.floor(diff / 60)} min ago`;
+    if (diff < 86400) return `${Math.floor(diff / 3600)} hr ago`;
+
+    return `${Math.floor(diff / 86400)} days ago`;
+  };
+
+  const getActionIcon = (action) => {
+    switch (action) {
+      case "added": return "🟢";
+      case "blocked": return "🟡";
+      case "removed": return "🔴";
+      default: return "⚪";
+    }
+  };
 
   /* ================= FETCH DATA ================= */
   useEffect(() => {
@@ -71,6 +114,21 @@ export default function Overview() {
       );
 
       setRecentAdmins(sortedAdmins.slice(0, 5));
+
+      /* ===== FETCH ACTIVITY LOGS ===== */
+
+      const logsQuery = query(
+        collection(db, "superAdminLogs"),
+        orderBy("createdAt", "desc"),
+        limit(10)
+      );
+
+      const logsSnap = await getDocs(logsQuery);
+
+      const logs = logsSnap.docs.map(doc => doc.data());
+
+      setActivityLogs(logs);
+
     };
 
     fetchData();
@@ -138,11 +196,11 @@ export default function Overview() {
 
       </div>
 
-      {/* ================= CONTENT ROW ================= */}
+      {/* ================= CONTENT ================= */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
 
         {/* ================= RECENT ADMINS ================= */}
-        <div className="bg-white p-6 rounded-2xl shadow-md hover:shadow-lg transition">
+        <div className="bg-white p-6 rounded-2xl shadow-md">
 
           <div className="flex justify-between items-center mb-5">
             <h2 className="font-semibold text-gray-800">
@@ -175,9 +233,7 @@ export default function Overview() {
                 </div>
 
                 <span className="text-xs bg-gray-100 px-3 py-1 rounded-full">
-                  {admin.createdAt?.toDate
-                    ? admin.createdAt.toDate().toLocaleString()
-                    : "—"}
+                  {formatDateTime(admin.createdAt)}
                 </span>
 
               </div>
@@ -188,7 +244,7 @@ export default function Overview() {
         </div>
 
         {/* ================= ACTIVITY LOG ================= */}
-        <div className="bg-white p-6 rounded-2xl shadow-md hover:shadow-lg transition">
+        <div className="bg-white p-6 rounded-2xl shadow-md">
 
           <h2 className="font-semibold text-gray-800 mb-5">
             Activity Logs
@@ -196,26 +252,37 @@ export default function Overview() {
 
           <div className="space-y-3 text-sm max-h-72 overflow-y-auto pr-2">
 
-            {recentAdmins.map((admin, index) => (
+            {activityLogs.length === 0 ? (
+              <p className="text-gray-500">
+                No activity yet
+              </p>
+            ) : (
+              activityLogs.map((log, index) => (
 
-              <div
-                key={index}
-                className="flex justify-between items-center bg-gray-50 px-4 py-3 rounded-lg"
-              >
+                <div
+                  key={index}
+                  className="flex justify-between items-center bg-gray-50 px-4 py-3 rounded-lg"
+                >
 
-                <p className="text-gray-700">
-                  👤 <span className="font-medium">{admin.name}</span> added
-                </p>
+                  <p className="text-gray-700">
+                    {getActionIcon(log.action)}{" "}
+                    <span className="font-medium">{log.name}</span>{" "}
+                    {log.action}
+                  </p>
 
-                <span className="text-xs text-gray-500">
-                  {admin.createdAt?.toDate
-                    ? admin.createdAt.toDate().toLocaleString()
-                    : "—"}
-                </span>
+                  <div className="text-right">
+                    <p className="text-xs text-gray-500">
+                      {formatDateTime(log.createdAt)}
+                    </p>
+                    <p className="text-[10px] text-gray-400">
+                      {timeAgo(log.createdAt)}
+                    </p>
+                  </div>
 
-              </div>
+                </div>
 
-            ))}
+              ))
+            )}
 
           </div>
 
@@ -231,24 +298,19 @@ export default function Overview() {
 
 function StatCard({ icon, title, value, color }) {
   return (
-    <div className="bg-white rounded-xl p-4 sm:p-5 shadow-sm hover:shadow-md transition">
+    <div className="bg-white rounded-xl p-4 shadow-sm hover:shadow-md transition">
 
-      {/* ICON */}
-      <div className="flex items-center justify-between mb-3 sm:mb-4">
-        <div className={`p-2 sm:p-3 rounded-lg ${color}`}>
-          <div className="text-base sm:text-lg">
-            {icon}
-          </div>
+      <div className="flex items-center justify-between mb-3">
+        <div className={`p-3 rounded-lg ${color}`}>
+          {icon}
         </div>
       </div>
 
-      {/* TITLE */}
-      <p className="text-xs sm:text-sm text-gray-500">
+      <p className="text-sm text-gray-500">
         {title}
       </p>
 
-      {/* VALUE */}
-      <p className="text-lg sm:text-2xl font-semibold text-gray-900 mt-1">
+      <p className="text-2xl font-semibold text-gray-900 mt-1">
         {value}
       </p>
     </div>
