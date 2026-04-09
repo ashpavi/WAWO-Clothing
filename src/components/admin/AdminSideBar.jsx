@@ -183,7 +183,7 @@ export default function AdminSideBar({ isOpen, setIsOpen }) {
             onClick={handleLogout}
             className="mt-auto flex items-center gap-3 px-4 py-3 
                        rounded-xl text-sm font-medium text-red-400 
-                       hover:bg-red-500/10 transition"
+                       hover:bg-red-500/10 transition cursor-pointer"
           >
             <FaSignOutAlt size={14} />
             Logout
