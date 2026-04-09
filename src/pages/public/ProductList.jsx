@@ -281,7 +281,7 @@ export default function ProductList() {
                   <ProductCard key={product.id} product={product} />
                 ))
               ) : (
-                <p className="text-center text-gray-500 col-span-full">
+                <p className="text-center  text-gray-500 col-span-full lg:ml-[-300px] pt-3">
                   No products found for your current search and filters.
                 </p>
               )

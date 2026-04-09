@@ -1,12 +1,14 @@
 import { useEffect, useState } from "react";
-import { db, auth, firebaseConfig } from "../../firebase/firebaseConfig";
+import { db, firebaseConfig } from "../../firebase/firebaseConfig";
 import {
   collection,
   getDocs,
   doc,
   updateDoc,
   deleteDoc,
-  setDoc
+  setDoc,
+  addDoc,
+  serverTimestamp
 } from "firebase/firestore";
 
 import {
@@ -23,7 +25,6 @@ export default function ManageAdmins() {
   const [showAddModal, setShowAddModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [selectedAdmin, setSelectedAdmin] = useState(null);
-
   const [showPassword, setShowPassword] = useState(false);
 
   const [newAdmin, setNewAdmin] = useState({
@@ -32,14 +33,10 @@ export default function ManageAdmins() {
     password: ""
   });
 
-    const resetForm = () => {
-      setNewAdmin({
-        name: "",
-        email: "",
-        password: ""
-      });
-      setShowPassword(false);
-    };
+  const resetForm = () => {
+    setNewAdmin({ name: "", email: "", password: "" });
+    setShowPassword(false);
+  };
 
   /* ================= SECONDARY AUTH ================= */
   const secondaryApp = initializeApp(firebaseConfig, "Secondary");
@@ -67,7 +64,6 @@ export default function ManageAdmins() {
 
     try {
 
-      // ✅ Create user using secondary auth (IMPORTANT)
       const userCredential = await createUserWithEmailAndPassword(
         secondaryAuth,
         newAdmin.email,
@@ -76,7 +72,6 @@ export default function ManageAdmins() {
 
       const user = userCredential.user;
 
-      // ✅ Save in Firestore
       await setDoc(doc(db, "users", user.uid), {
         uid: user.uid,
         name: newAdmin.name,
@@ -86,12 +81,18 @@ export default function ManageAdmins() {
         createdAt: new Date()
       });
 
-      
+      // ✅ LOG ACTIVITY
+      await addDoc(collection(db, "superAdminLogs"), {
+        action: "added",
+        name: newAdmin.name,
+        email: newAdmin.email,
+        createdAt: serverTimestamp(),
+      });
+
       await secondaryAuth.signOut();
 
-      setNewAdmin({ name: "", email: "", password: "" });
-      setShowAddModal(false);
       resetForm();
+      setShowAddModal(false);
       fetchAdmins();
 
     } catch (error) {
@@ -102,9 +103,20 @@ export default function ManageAdmins() {
 
   /* ================= TOGGLE STATUS ================= */
   const toggleStatus = async (admin) => {
+    const newStatus = !admin.isBlocked;
+
     await updateDoc(doc(db, "users", admin.id), {
-      isBlocked: !admin.isBlocked
+      isBlocked: newStatus
     });
+
+    // ✅ LOG ACTIVITY
+    await addDoc(collection(db, "superAdminLogs"), {
+      action: newStatus ? "blocked" : "unblocked",
+      name: admin.name,
+      email: admin.email,
+      createdAt: serverTimestamp(),
+    });
+
     fetchAdmins();
   };
 
@@ -119,20 +131,25 @@ export default function ManageAdmins() {
 
     await deleteDoc(doc(db, "users", selectedAdmin.id));
 
+    //  LOG ACTIVITY
+    await addDoc(collection(db, "superAdminLogs"), {
+      action: "removed",
+      name: selectedAdmin.name,
+      email: selectedAdmin.email,
+      createdAt: serverTimestamp(),
+    });
+
     setShowDeleteModal(false);
     setSelectedAdmin(null);
     fetchAdmins();
   };
-
-  return (
-
+return (
     <div className="bg-gray-50 h-full flex flex-col overflow-hidden">
 
       <div className="max-w-5xl w-full mx-auto flex flex-col h-full pt-4 pb-2">
 
         {/* HEADER */}
         <div className="flex justify-between items-center mb-3">
-
           <div>
             <h1 className="text-2xl font-semibold text-gray-900">
               Manage Admins
@@ -148,7 +165,6 @@ export default function ManageAdmins() {
           >
             + Add Admin
           </button>
-
         </div>
 
         {/* TABLE */}
