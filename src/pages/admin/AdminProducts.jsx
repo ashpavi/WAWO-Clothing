@@ -196,8 +196,19 @@ export default function AdminProducts() {
 
                 <td className="p-4">{product.category}</td>
 
-                <td className="p-4 font-semibold">
-                  LKR {product.price}
+                <td className="p-4 font-semibold whitespace-nowrap">
+                  {product.isOnSale && product.discountPrice ? (
+                    <>
+                      <span className="line-through text-gray-400 mr-2">
+                        LKR {product.price}
+                      </span>
+                      <span className="text-black">
+                        LKR {product.discountPrice}
+                      </span>
+                    </>
+                  ) : (
+                    <span>LKR {product.price}</span>
+                  )}
                 </td>
 
                 <td className="p-4">
@@ -315,6 +326,20 @@ export default function AdminProducts() {
                   setEditingProduct({
                     ...editingProduct,
                     price: Number(e.target.value),
+                  })
+                }
+                className="w-full border rounded-lg px-4 py-2"
+              />
+
+              <input
+                type="number"
+                placeholder="Discount Price"
+                value={editingProduct.discountPrice || ""}
+                onChange={(e) =>
+                  setEditingProduct({
+                    ...editingProduct,
+                    discountPrice: Number(e.target.value),
+                    isOnSale: Number(e.target.value) > 0,
                   })
                 }
                 className="w-full border rounded-lg px-4 py-2"

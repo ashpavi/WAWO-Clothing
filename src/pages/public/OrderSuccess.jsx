@@ -124,43 +124,78 @@ export default function OrderSuccess() {
               )}
 
               {paymentMethod === "bankTransfer" && (
-                <div className="w-full space-y-4">
-                  <div className="flex items-center gap-3">
-                    <FaUniversity className="text-blue-600" />
-                    Bank Transfer
-                  </div>
+                  <div className="w-full space-y-4">
 
-                  <div className="rounded-xl border border-blue-100 bg-blue-50/60 p-4 text-sm">
-                    <div className="grid gap-3 sm:grid-cols-2">
-                      <div>
-                        <p className="text-xs uppercase tracking-wide text-gray-500">Bank Name</p>
-                        <p className="font-medium text-gray-800">{paymentDetails.bankName}</p>
-                      </div>
-                      <div>
-                        <p className="text-xs uppercase tracking-wide text-gray-500">Account Name</p>
-                        <p className="font-medium text-gray-800">{paymentDetails.accountName}</p>
-                      </div>
-                      <div>
-                        <p className="text-xs uppercase tracking-wide text-gray-500">Account Number</p>
-                        <p className="font-medium text-gray-800">{paymentDetails.accountNumber}</p>
-                      </div>
-                      <div>
-                        <p className="text-xs uppercase tracking-wide text-gray-500">SWIFT Code</p>
-                        <p className="font-medium text-gray-800">{paymentDetails.swiftCode}</p>
-                      </div>
+                    {/* HEADER */}
+                    <div className="flex items-center gap-3">
+                      <FaUniversity className="text-blue-600" />
+                      Bank Transfer
                     </div>
 
-                    <p className="mt-3 text-xs text-gray-600">{paymentDetails.reference}</p>
-                  </div>
-                </div>
-              )}
+                    {/* DETAILS CARD */}
+                    <div className="rounded-xl border border-blue-100 bg-blue-50 p-5 text-sm space-y-4">
 
-              {paymentMethod === "paypal" && (
-                <>
-                  <FaUniversity className="text-blue-600" />
-                  PayPal
-                </>
-              )}
+                      {/* BANK DETAILS */}
+                      <div className="grid gap-3 sm:grid-cols-2">
+
+                        <div>
+                          <p className="text-xs text-gray-500">Bank Name</p>
+                          <p className="font-medium text-gray-800">
+                            {paymentDetails.bankName}
+                          </p>
+                        </div>
+
+                        <div>
+                          <p className="text-xs text-gray-500">Branch</p>
+                          <p className="font-medium text-gray-800">
+                            {paymentDetails.branch}
+                          </p>
+                        </div>
+
+                        <div>
+                          <p className="text-xs text-gray-500">Account Number</p>
+                          <p className="font-medium text-gray-800">
+                            {paymentDetails.accountNumber}
+                          </p>
+                        </div>
+
+                        <div>
+                          <p className="text-xs text-gray-500">Account Holder</p>
+                          <p className="font-medium text-gray-800">
+                            {paymentDetails.accountHolder}
+                          </p>
+                        </div>
+
+                      </div>
+
+                      {/* INSTRUCTIONS */}
+                      <div className="bg-white border rounded-lg p-3 text-gray-600 text-xs">
+                        <p className="font-medium mb-1 text-gray-700">Instructions:</p>
+                        <ul className="list-disc pl-4 space-y-1">
+                          <li>Complete the bank transfer using the above details</li>
+                          <li>Send your deposit slip via WhatsApp after payment</li>
+                          <li>
+                            Mention your <b>Name</b> and <b>City</b> as reference
+                          </li>
+                        </ul>
+                      </div>
+
+                      {/* WHATSAPP BUTTON */}
+                      <a
+                        href="https://wa.me/94765358085"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-2 bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg text-xs"
+                      >
+                        💬 Send Slip via WhatsApp
+                      </a>
+
+                    </div>
+
+                  </div>
+                )}
+
+              
 
               {paymentMethod === "cod" && (
                 <>

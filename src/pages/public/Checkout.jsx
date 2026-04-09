@@ -17,9 +17,9 @@ export default function Checkout() {
   const navigate = useNavigate();
   const { cartItems, clearCart } = useCart();
   const { currentUser } = useAuth();
-  const [loading, setLoading] = useState(false);
 
-  const [paymentMethod, setPaymentMethod] = useState("card");
+  const [loading, setLoading] = useState(false);
+  const [paymentMethod, setPaymentMethod] = useState("bankTransfer");
 
   const [shippingData, setShippingData] = useState({
     fullName: "",
@@ -30,7 +30,9 @@ export default function Checkout() {
     email: ""
   });
 
-  /* ================= ORDER CALCULATIONS ================= */
+  const [errors, setErrors] = useState({});
+
+  /* ================= CALCULATIONS ================= */
 
   const subtotal = cartItems.reduce(
     (acc, item) => acc + item.price * item.quantity,
@@ -38,424 +40,289 @@ export default function Checkout() {
   );
 
   const COD_FEE = paymentMethod === "cod" ? 350 : 0;
-
   const total = subtotal + COD_FEE;
 
-  /* ================= PLACE ORDER ================= */
+  /* ================= VALIDATION ================= */
+
   const validateForm = () => {
 
-  if (!shippingData.fullName.trim()) {
-    alert("Please enter your full name");
-    return false;
-  }
+    const newErrors = {};
 
-  if (!shippingData.streetAddress.trim()) {
-    alert("Please enter your street address");
-    return false;
-  }
+    if (!shippingData.fullName.trim())
+      newErrors.fullName = "* Full name is required";
 
-  if (!shippingData.city.trim()) {
-    alert("Please enter your city");
-    return false;
-  }
+    if (!shippingData.streetAddress.trim())
+      newErrors.streetAddress = "* Address is required";
 
-  if (!shippingData.zipcode.trim()) {
-    alert("Please enter your ZIP code");
-    return false;
-  }
+    if (!shippingData.city.trim())
+      newErrors.city = "* City is required";
 
-  if (!shippingData.contactno.trim()) {
-    alert("Please enter your contact number");
-    return false;
-  }
-
-  if (!shippingData.email.trim()) {
-    alert("Please enter your email address");
-    return false;
-  }
-
-  if (cartItems.length === 0) {
-    alert("Your cart is empty");
-    return false;
-  }
-
-  return true;
-};
-
-const handlePlaceOrder = async () => {
-
-  if (!validateForm()) return;
-
-  if (loading) return; // 🔥 prevent double click
-
-  
-  for (const item of cartItems) {
-    if (item.stock === 0) {
-      alert(`${item.name} is out of stock`);
-      return;
+    if (!shippingData.contactno.trim()) {
+      newErrors.contactno = "* Phone number is required";
+    } else if (!/^\d{10}$/.test(shippingData.contactno)) {
+      newErrors.contactno = "* Enter a valid 10-digit phone number";
     }
 
-    if (item.quantity > item.stock) {
-      alert(`${item.name} only has ${item.stock} items left`);
-      return;
+    if (!shippingData.email.trim()) {
+      newErrors.email = "* Email is required";
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(shippingData.email)) {
+      newErrors.email = "* Enter a valid email address";
     }
-  }
 
-  setLoading(true);
+    if (cartItems.length === 0) {
+      alert("Cart is empty");
+      return false;
+    }
 
-  try {
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
 
-    const paymentDetails = paymentMethod === "bankTransfer"
-      ? bankTransferDetails
-      : null;
+  /* ================= PLACE ORDER ================= */
 
-    const order = {
-      customer: shippingData,
-      items: cartItems,
-      paymentMethod,
-      paymentDetails,
-      subtotal,
-      codFee: COD_FEE,
-      total,
-      status: "Processing",
-      userId: currentUser ? currentUser.uid : null,
-      isGuest: !currentUser,
-    };
+  const handlePlaceOrder = async () => {
 
-    const orderId = await createOrder(order);
+    if (!validateForm()) return;
+    if (loading) return;
 
-    clearCart(); 
+    for (const item of cartItems) {
+      if (item.stock === 0) return alert(`${item.name} is out of stock`);
+      if (item.quantity > item.stock) {
+        return alert(`${item.name} only has ${item.stock} left`);
+      }
+    }
 
-    navigate("/orderSuccess", {
-      state: {
-        orderId,
-        shippingData,
+    setLoading(true);
+
+    try {
+
+      const paymentDetails =
+        paymentMethod === "bankTransfer" ? bankTransferDetails : null;
+
+      const order = {
+        customer: shippingData,
+        items: cartItems,
         paymentMethod,
         paymentDetails,
-        items: cartItems,
         subtotal,
         codFee: COD_FEE,
         total,
-        date: new Date().toISOString()
-      }
-    });
+        status: "Processing",
+        userId: currentUser ? currentUser.uid : null,
+        isGuest: !currentUser,
+      };
 
-  } catch (error) {
+      const orderId = await createOrder(order);
 
-    console.error("Order creation failed:", error);
+      clearCart();
 
-  } finally {
-    setLoading(false);
-  }
-};
+      navigate("/orderSuccess", {
+        state: {
+          orderId,
+          shippingData,
+          paymentMethod,
+          paymentDetails,
+          items: cartItems,
+          subtotal,
+          codFee: COD_FEE,
+          total,
+          date: new Date().toISOString()
+        }
+      });
+
+    } catch (error) {
+      console.error("Order failed:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
 
-    <div className="bg-gray-50 min-h-screen py-10 sm:py-14">
+    <div className="bg-gray-50 min-h-screen py-10">
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="max-w-7xl mx-auto px-4">
 
-        {/* BACK BUTTON */}
-
+        {/* BACK */}
         <button
           onClick={() => navigate("/cart")}
-          className="flex items-center gap-2 text-sm text-gray-600 mb-10 hover:text-black"
+          className="flex items-center gap-2 text-sm mb-8"
         >
           <FaArrowLeft />
           Back to Cart
         </button>
 
+        <div className="grid lg:grid-cols-3 gap-10">
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 lg:gap-12">
-
-
-          {/* ================= LEFT SIDE ================= */}
-
+          {/* LEFT */}
           <div className="lg:col-span-2 space-y-8">
-            {!currentUser && (
-              <div className="bg-white border rounded-2xl p-5 mb-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 shadow-sm">
-                
+
+            {/* ADDRESS */}
+            <div className="bg-white p-6 rounded-2xl border space-y-4">
+
+              <h3 className="font-semibold">Delivery Address</h3>
+
+              <input
+                placeholder="Full Name"
+                className={`input ${errors.fullName && "border-red-500"}`}
+                onChange={(e)=>setShippingData({...shippingData,fullName:e.target.value})}
+              />
+              {errors.fullName && <p className="error">{errors.fullName}</p>}
+
+              <input
+                placeholder="Street Address"
+                className={`input ${errors.streetAddress && "border-red-500"}`}
+                onChange={(e)=>setShippingData({...shippingData,streetAddress:e.target.value})}
+              />
+              {errors.streetAddress && <p className="error">{errors.streetAddress}</p>}
+
+              <div className="grid grid-cols-2 gap-4">
+
                 <div>
-                  <p className="text-sm text-gray-700 font-medium">
-                    Checkout as a guest or login for a faster experience
-                  </p>
-                  <p className="text-xs text-gray-500">
-                    Save your details, track orders, and checkout quicker next time.
-                  </p>
+                  <input
+                    placeholder="City"
+                    className={`input ${errors.city && "border-red-500"}`}
+                    onChange={(e)=>setShippingData({...shippingData,city:e.target.value})}
+                  />
+                  {errors.city && <p className="error">{errors.city}</p>}
                 </div>
 
-                <button
-                  onClick={() => navigate("/login")}
-                  className="px-5 py-2 text-sm bg-black text-white rounded-lg hover:bg-gray-800 transition"
-                >
-                  Login
-                </button>
-
-              </div>
-            )}
-
-
-            {/* DELIVERY ADDRESS */}
-
-            <div className="bg-white p-6 sm:p-8 rounded-2xl shadow-sm border space-y-6">
-
-              <h3 className="text-lg font-semibold">
-                Delivery Address
-              </h3>
-
-
-              <input
-                value={shippingData.fullName}
-                onChange={(e) =>
-                  setShippingData({ ...shippingData, fullName: e.target.value })
-                }
-                className="w-full border rounded-xl px-4 py-3 focus:ring-2 focus:ring-blue-500 outline-none"
-                placeholder="Full Name"
-              />
-
-
-              <input
-                value={shippingData.streetAddress}
-                onChange={(e) =>
-                  setShippingData({ ...shippingData, streetAddress: e.target.value })
-                }
-                className="w-full border rounded-xl px-4 py-3 focus:ring-2 focus:ring-blue-500 outline-none"
-                placeholder="Street Address"
-              />
-
-
-              <div className="grid grid-cols-2 gap-4">
-
                 <input
-                  value={shippingData.city}
-                  onChange={(e) =>
-                    setShippingData({ ...shippingData, city: e.target.value })
-                  }
-                  className="border rounded-xl px-4 py-3 focus:ring-2 focus:ring-blue-500 outline-none"
-                  placeholder="City"
-                />
-
-                <input
-                  value={shippingData.zipcode}
-                  onChange={(e) =>
-                    setShippingData({ ...shippingData, zipcode: e.target.value })
-                  }
-                  className="border rounded-xl px-4 py-3 focus:ring-2 focus:ring-blue-500 outline-none"
-                  placeholder="ZIP Code"
+                  placeholder="ZIP Code (Optional)"
+                  className="input"
+                  onChange={(e)=>setShippingData({...shippingData,zipcode:e.target.value})}
                 />
 
               </div>
 
-
               <div className="grid grid-cols-2 gap-4">
 
-                <input
-                  value={shippingData.contactno}
-                  onChange={(e) =>
-                    setShippingData({ ...shippingData, contactno: e.target.value })
-                  }
-                  className="border rounded-xl px-4 py-3 focus:ring-2 focus:ring-blue-500 outline-none"
-                  placeholder="Contact Number"
-                />
+                <div>
+                  <input
+                    placeholder="Phone"
+                    className={`input ${errors.contactno && "border-red-500"}`}
+                    onChange={(e)=>setShippingData({...shippingData,contactno:e.target.value})}
+                  />
+                  {errors.contactno && <p className="error">{errors.contactno}</p>}
+                </div>
 
-                <input
-                  value={shippingData.email}
-                  onChange={(e) =>
-                    setShippingData({ ...shippingData, email: e.target.value })
-                  }
-                  className="border rounded-xl px-4 py-3 focus:ring-2 focus:ring-blue-500 outline-none"
-                  placeholder="Email Address"
-                />
+                <div>
+                  <input
+                    placeholder="Email"
+                    className={`input ${errors.email && "border-red-500"}`}
+                    onChange={(e)=>setShippingData({...shippingData,email:e.target.value})}
+                  />
+                  {errors.email && <p className="error">{errors.email}</p>}
+                </div>
 
               </div>
 
             </div>
 
+            {/* PAYMENT */}
+            <div className="bg-white p-6 rounded-2xl border space-y-4">
 
-            {/* PAYMENT METHOD */}
-
-            <div className="bg-white p-6 sm:p-8 rounded-2xl shadow-sm border space-y-6">
-
-              <h3 className="text-lg font-semibold">
-                Payment Method
-              </h3>
-
+              <h3 className="font-semibold">Payment Method</h3>
 
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
 
-                <button
-                  type="button"
-                  onClick={() => setPaymentMethod("card")}
-                  className={`p-4 rounded-xl border flex items-center gap-3 cursor-pointer
-                    transition-colors ${paymentMethod === "card" ? "border-blue-600 bg-blue-50" : ""}`}
-                >
-                  <FaCreditCard />
-                  Credit Card
+                <button disabled className="p-4 border rounded-xl opacity-50">
+                  <FaCreditCard /> Card (Coming Soon)
                 </button>
 
-
                 <button
-                  type="button"
-                  onClick={() => setPaymentMethod("bankTransfer")}
-                  className={`p-4 rounded-xl border flex items-center gap-3 cursor-pointer
-                    transition-colors ${paymentMethod === "bankTransfer" ? "border-blue-600 bg-blue-50" : ""}`}
+                  onClick={()=>setPaymentMethod("bankTransfer")}
+                  className={`p-4 border rounded-xl ${
+                    paymentMethod==="bankTransfer" && "border-blue-600 bg-blue-50"
+                  }`}
                 >
-                  <FaUniversity />
-                  Bank Transfer
+                  <FaUniversity /> Bank Transfer
                 </button>
 
-
                 <button
-                  type="button"
-                  onClick={() => setPaymentMethod("cod")}
-                  className={`p-4 rounded-xl border flex items-center gap-3 cursor-pointer
-                    transition-colors ${paymentMethod === "cod" ? "border-blue-600 bg-blue-50" : ""}`}
+                  onClick={()=>setPaymentMethod("cod")}
+                  className={`p-4 border rounded-xl ${
+                    paymentMethod==="cod" && "border-blue-600 bg-blue-50"
+                  }`}
                 >
-                  <FaMoneyBillWave />
-                  Cash on Delivery
+                  <FaMoneyBillWave /> COD
                 </button>
 
               </div>
 
-              <div
-                className={`grid transition-all duration-300 ease-out ${paymentMethod === "bankTransfer"
-                  ? "grid-rows-[1fr] opacity-100"
-                  : "grid-rows-[0fr] opacity-0"
-                }`}
-              >
-                <div className="overflow-hidden">
-                  <div className="mt-4 rounded-2xl border border-blue-100 bg-gradient-to-br from-sky-50 to-white p-5 text-sm text-gray-700 shadow-sm">
-                    <div className="flex items-center gap-2 text-blue-700 font-semibold mb-4">
-                      <FaUniversity />
-                      Transfer Details
-                    </div>
+              {/* 🔥 BANK TRANSFER UI */}
+              {paymentMethod === "bankTransfer" && (
+                <div className="mt-4 p-5 border rounded-xl bg-blue-50 space-y-4">
 
-                    <div className="grid gap-3 sm:grid-cols-2">
-                      <div>
-                        <p className="text-xs uppercase tracking-wide text-gray-500">Bank Name</p>
-                        <p className="font-medium">{bankTransferDetails.bankName}</p>
-                      </div>
-                      <div>
-                        <p className="text-xs uppercase tracking-wide text-gray-500">Account Name</p>
-                        <p className="font-medium">{bankTransferDetails.accountName}</p>
-                      </div>
-                      <div>
-                        <p className="text-xs uppercase tracking-wide text-gray-500">Account Number</p>
-                        <p className="font-medium">{bankTransferDetails.accountNumber}</p>
-                      </div>
-                      <div>
-                        <p className="text-xs uppercase tracking-wide text-gray-500">SWIFT Code</p>
-                        <p className="font-medium">{bankTransferDetails.swiftCode}</p>
-                      </div>
-                    </div>
+                  <h4 className="font-semibold text-blue-700">
+                    Bank Transfer Details
+                  </h4>
 
-                    <p className="mt-4 rounded-xl bg-white/80 px-4 py-3 text-xs text-gray-600 border border-blue-100">
-                      {bankTransferDetails.reference}
-                    </p>
+                  <div className="text-sm text-gray-700 space-y-1">
+                    <p><b>Bank:</b> {bankTransferDetails.bankName}</p>
+                    <p><b>Branch:</b> {bankTransferDetails.branch}</p>
+                    <p><b>Account Number:</b> {bankTransferDetails.accountNumber}</p>
+                    <p><b>Account Holder:</b> {bankTransferDetails.accountHolder}</p>
                   </div>
+
+                  <div className="text-sm text-gray-600 bg-white p-3 rounded-lg border">
+                    <p className="font-medium mb-1">Instructions:</p>
+                    <ul className="list-disc pl-5 space-y-1">
+                      <li>Complete the bank transfer using above details</li>
+                      <li>Send your deposit slip via WhatsApp after payment</li>
+                      <li>Mention your <b>Name</b> and <b>City</b> as reference</li>
+                    </ul>
+                  </div>
+
+                  <a
+                    href="https://wa.me/94765358085"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-2 bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg text-sm"
+                  >
+                    💬 Send Slip via WhatsApp
+                  </a>
+
                 </div>
-              </div>
+              )}
 
             </div>
 
           </div>
 
+          {/* RIGHT */}
+          <div className="bg-white p-6 rounded-2xl border space-y-4 h-fit">
 
-          {/* ================= RIGHT SIDE ================= */}
+            <h3 className="font-semibold">Order Summary</h3>
 
-          <div className="bg-white border rounded-2xl p-6 shadow-sm lg:sticky lg:top-24 h-fit space-y-6">
-
-            <h3 className="text-lg font-semibold">
-              Order Summary
-            </h3>
-
-
-            {/* ITEMS */}
-
-            <div className="space-y-3 text-sm">
-
-              {cartItems.map((item) => (
-
-                <div key={item.id} className="flex justify-between">
-
-                  <span>
-                    {item.name} × {item.quantity}
-                  </span>
-
-                  <span>
-                    {formatPrice(item.price * item.quantity)}
-                  </span>
-
-                </div>
-
-              ))}
-
-            </div>
-
-
-            <hr />
-
-
-            {/* SUBTOTAL */}
-
-            <div className="flex justify-between text-sm">
-
+            <div className="flex justify-between">
               <span>Subtotal</span>
-
               <span>{formatPrice(subtotal)}</span>
-
             </div>
 
-
-            {/* COD FEE */}
-
-            {paymentMethod === "cod" && (
-
-              <div className="flex justify-between text-sm">
-
-                <span>Cash on Delivery</span>
-
+            {paymentMethod==="cod" && (
+              <div className="flex justify-between">
+                <span>COD Fee</span>
                 <span>{formatPrice(350)}</span>
-
               </div>
-
             )}
 
-
             <hr />
 
-
-            {/* TOTAL */}
-
-            <div className="flex justify-between font-bold text-lg">
-
+            <div className="flex justify-between font-bold">
               <span>Total</span>
-
-              <span className="text-blue-600">
-                {formatPrice(total)}
-              </span>
-
+              <span>{formatPrice(total)}</span>
             </div>
-
-
-            {/* PLACE ORDER */}
 
             <button
               onClick={handlePlaceOrder}
               disabled={loading}
               className={`w-full py-3 rounded-xl text-white ${
-                loading
-                  ? "bg-gray-400 cursor-not-allowed"
-                  : "bg-black hover:bg-gray-800"
+                loading ? "bg-gray-400" : "bg-black hover:bg-gray-800"
               }`}
             >
-              {loading ? "Placing Order..." : "Place Order →"}
+              {loading ? "Placing..." : "Place Order"}
             </button>
-
-
-            <p className="text-xs text-gray-500 text-center">
-              Secure 256-bit SSL encrypted payment.
-            </p>
 
           </div>
 
@@ -464,7 +331,5 @@ const handlePlaceOrder = async () => {
       </div>
 
     </div>
-
   );
-
 }

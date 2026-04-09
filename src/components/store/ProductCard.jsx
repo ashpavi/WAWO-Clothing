@@ -12,18 +12,20 @@ export default function ProductCard({ product }) {
   const productPath = `/products/${productId}`;
 
   const handleAdd = () => {
-    addToCart({
-      id: product.id,
-      name: product.name,
-      price: product.price,
-      images: product.images,
-      stock: product.stock,
-      quantity: 1
-    });
+      addToCart({
+        id: product.id,
+        name: product.name,
+        price: product.isOnSale && product.discountPrice
+          ? product.discountPrice
+          : product.price,
+        images: product.images,
+        stock: product.stock,
+        quantity: 1
+      });
 
-    setAdded(true);
-    setTimeout(() => setAdded(false), 1500);
-  };
+      setAdded(true);
+      setTimeout(() => setAdded(false), 1500);
+    };
 
   return (
     <div
@@ -73,9 +75,22 @@ export default function ProductCard({ product }) {
         </Link>
 
         {/* PRICE */}
-        <p className="text-black font-bold text-lg mt-2">
-          {formatPrice(product.price)}
-        </p>
+        <div className="mt-2">
+          {product.isOnSale && product.discountPrice ? (
+            <div className="flex items-center gap-2">
+              <span className="text-gray-500 line-through text-sm">
+                {formatPrice(product.price)}
+              </span>
+              <span className="text-black font-bold text-lg">
+                {formatPrice(product.discountPrice)}
+              </span>
+            </div>
+          ) : (
+            <p className="text-black font-bold text-lg">
+              {formatPrice(product.price)}
+            </p>
+          )}
+        </div>
 
         {/* BUTTON (ALIGNED) */}
         <div className="mt-auto  pt-3">
