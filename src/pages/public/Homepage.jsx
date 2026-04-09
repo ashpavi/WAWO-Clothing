@@ -168,11 +168,11 @@ export default function HomePage() {
         <div className="relative max-w-7xl mx-auto px-4 text-center">
 
           <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold">
-            Special Weekend Sale
+            Special Discounts
           </h2>
 
           <p className="mt-4 text-base sm:text-lg opacity-90">
-            Get up to 40% off on selected items.
+            Get up to 15% off on selected items.
           </p>
 
           <button
