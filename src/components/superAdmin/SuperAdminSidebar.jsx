@@ -18,7 +18,7 @@ export default function SuperAdminSidebar({isOpen, setIsOpen}) {
   const handleLogout = async () => {
     try {
       await logoutUser();
-      navigate("/login");
+      navigate("/", { replace: true });
     } catch (error) {
       console.error("Logout failed:", error);
     }

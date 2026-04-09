@@ -25,7 +25,7 @@ export default function AdminSideBar({ isOpen, setIsOpen }) {
   const handleLogout = async () => {
     try {
       await logoutUser();
-      navigate("/login");
+      navigate("/", { replace: true });
     } catch (error) {
       console.error("Logout failed:", error);
     }
