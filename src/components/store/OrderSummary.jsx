@@ -7,8 +7,11 @@ export default function OrderSummary({ subtotal }) {
 
   const isDisabled = subtotal === 0;
 
+  // ✅ ADD THIS
+  const isFreeDelivery = subtotal >= 5000;
+
   return (
-    <div className="bg-white border rounded-xl p-6 shadow-sm space-y-5">
+    <div className="bg-white border rounded-xl p-5 shadow-sm space-y-5">
 
       <h2 className="text-xl font-semibold">
         Order Summary
@@ -19,6 +22,20 @@ export default function OrderSummary({ subtotal }) {
         <span>Subtotal</span>
         <span>{formatPrice(subtotal)}</span>
       </div>
+
+      {/* 💡 FREE DELIVERY MESSAGE */}
+      {!isFreeDelivery && subtotal > 0 && (
+        <p className="text-sm text-orange-600 font-medium">
+          Spend {formatPrice(5000 - subtotal)} more to get FREE delivery on COD
+        </p>
+      )}
+
+      {/*  FREE DELIVERY UNLOCKED */}
+      {isFreeDelivery && (
+        <p className="text-sm text-green-600 font-medium">
+           FREE delivery available for COD orders!
+        </p>
+      )}
 
       <hr />
 
