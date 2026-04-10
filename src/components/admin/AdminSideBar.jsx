@@ -6,7 +6,8 @@ import {
   FaShoppingCart,
   FaUsers,
   FaSignOutAlt,
-  FaTimes
+  FaTimes,
+  FaUniversity
 } from "react-icons/fa";
 import { MdOutlineMessage } from "react-icons/md";
 
@@ -174,6 +175,21 @@ export default function AdminSideBar({ isOpen, setIsOpen }) {
             >
               <FaUsers size={14} />
               Users
+            </NavLink>
+
+            <NavLink
+              to="/admin/bank-details"
+              onClick={() => setIsOpen(false)}
+              className={({ isActive }) =>
+                `${linkStyle} ${
+                  isActive
+                    ? "bg-blue-600 text-white"
+                    : "text-gray-300 hover:bg-gray-800"
+                }`
+              }
+            >
+              <FaUniversity size={14} />
+              Bank Details
             </NavLink>
 
           </nav>

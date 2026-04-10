@@ -8,13 +8,13 @@ import {
 } from "react-icons/fa";
 import { useEffect } from "react";
 import { formatPrice } from "../../../utils/formatPrice";
-import { bankTransferDetails } from "../../../utils/bankTransferDetails";
 
 export default function OrderDetailModal({ order, onClose }) {
 
   if (!order) return null;
 
-  const paymentDetails = order.paymentDetails || bankTransferDetails;
+  // ✅ FIXED (no fallback)
+  const paymentDetails = order.paymentDetails;
 
   useEffect(() => {
 
@@ -127,55 +127,54 @@ export default function OrderDetailModal({ order, onClose }) {
 
         {/* PAYMENT METHOD */}
 
-          <div className="mb-6">
+        <div className="mb-6">
 
-            <h3 className="font-semibold mb-3 flex items-center gap-2">
-              Payment Method
-            </h3>
+          <h3 className="font-semibold mb-3 flex items-center gap-2">
+            Payment Method
+          </h3>
 
-            <div className="flex items-center gap-2 text-sm text-gray-700">
+          <div className="flex items-center gap-2 text-sm text-gray-700">
 
-              {order.paymentMethod === "card" && (
-                <>
-                  <FaCreditCard className="text-blue-600" />
-                  Credit Card
-                </>
-              )}
+            {order.paymentMethod === "card" && (
+              <>
+                <FaCreditCard className="text-blue-600" />
+                Credit Card
+              </>
+            )}
 
-              {order.paymentMethod === "bankTransfer" && (
-                <div className="w-full space-y-3">
-                  <div className="flex items-center gap-2">
-                    <FaUniversity className="text-blue-600" />
-                    Bank Transfer
-                  </div>
-
-                  <div className="rounded-xl border border-blue-100 bg-blue-50/60 p-4 text-xs text-gray-700">
-                    <p><strong>Bank:</strong> {paymentDetails.bankName}</p>
-                    <p><strong>Account:</strong> {paymentDetails.accountName}</p>
-                    <p><strong>Account No:</strong> {paymentDetails.accountNumber}</p>
-                    <p><strong>SWIFT:</strong> {paymentDetails.swiftCode}</p>
-                    <p><strong>Reference:</strong> {paymentDetails.reference}</p>
-                  </div>
-                </div>
-              )}
-
-              {order.paymentMethod === "paypal" && (
-                <>
+            {/* ✅ SAFE CHECK ADDED */}
+            {order.paymentMethod === "bankTransfer" && paymentDetails && (
+              <div className="w-full space-y-3">
+                <div className="flex items-center gap-2">
                   <FaUniversity className="text-blue-600" />
-                  PayPal
-                </>
-              )}
+                  Bank Transfer
+                </div>
 
-              {order.paymentMethod === "cod" && (
-                <>
-                  <FaMoneyBillWave className="text-green-600" />
-                  Cash on Delivery
-                </>
-              )}
+                <div className="rounded-xl border border-blue-100 bg-blue-50/60 p-4 text-xs text-gray-700">
+                  <p><strong>Bank:</strong> {paymentDetails.bankName}</p>
+                  <p><strong>Account:</strong> {paymentDetails.accountHolder}</p>
+                  <p><strong>Account No:</strong> {paymentDetails.accountNumber}</p>
+                </div>
+              </div>
+            )}
 
-            </div>
+            {order.paymentMethod === "paypal" && (
+              <>
+                <FaUniversity className="text-blue-600" />
+                PayPal
+              </>
+            )}
+
+            {order.paymentMethod === "cod" && (
+              <>
+                <FaMoneyBillWave className="text-green-600" />
+                Cash on Delivery
+              </>
+            )}
 
           </div>
+
+        </div>
 
 
         {/* TOTAL */}
