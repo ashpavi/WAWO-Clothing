@@ -29,7 +29,7 @@ export const ProductProvider = ({ children }) => {
           ...doc.data()
         }));
 
-        setProducts(data);
+        setProducts(data); 
         setLoading(false);
       },
       (error) => {
@@ -56,42 +56,19 @@ export const ProductProvider = ({ children }) => {
   /* ================= ADD PRODUCT ================= */
 
   const createProduct = async (productData) => {
-
-    const docId = await addProduct(productData);
-
-    const newProduct = {
-      ...productData,
-      id: docId
-    };
-
-    // Optional: immediate UI update (snapshot will also update)
-    setProducts((prev) => [...prev, newProduct]);
+    await addProduct(productData); 
   };
 
   /* ================= UPDATE PRODUCT ================= */
 
   const editProduct = async (id, updatedData) => {
-
-    await updateProduct(id, updatedData);
-
-    // Optional: instant UI update
-    setProducts((prev) =>
-      prev.map((p) =>
-        p.id === id ? { ...p, ...updatedData } : p
-      )
-    );
+    await updateProduct(id, updatedData); 
   };
 
   /* ================= DELETE PRODUCT ================= */
 
   const removeProduct = async (id) => {
-
-    await deleteProduct(id);
-
-    // Optional: instant UI update
-    setProducts((prev) =>
-      prev.filter((p) => p.id !== id)
-    );
+    await deleteProduct(id); 
   };
 
   return (

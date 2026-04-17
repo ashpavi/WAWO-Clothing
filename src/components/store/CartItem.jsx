@@ -36,9 +36,14 @@ export default function CartItem({ item, onIncrease, onDecrease, onRemove }) {
             {item.name}
           </h3>
 
-          <p className="font-semibold text-lg">
-            {formatPrice(itemTotal)}
-          </p>
+          <div className="text-right">
+            <p className="text-sm text-gray-500">
+              {formatPrice(item.price)} × {item.quantity}
+            </p>
+            <p className="font-semibold text-lg">
+              {formatPrice(itemTotal)}
+            </p>
+          </div>
         </div>
 
         {/* OPTIONAL DETAILS */}

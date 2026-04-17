@@ -19,14 +19,14 @@ export default function AdminSideBar({ isOpen, setIsOpen }) {
   const navigate = useNavigate();
   const { logoutUser } = useAuth();
 
-  const linkStyle =
+  const linkStyle = 
     "flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all duration-200";
 
   /* ================= LOGOUT ================= */
   const handleLogout = async () => {
     try {
       await logoutUser();
-      navigate("/login");
+      navigate("/", { replace: true });
     } catch (error) {
       console.error("Logout failed:", error);
     }
@@ -199,7 +199,7 @@ export default function AdminSideBar({ isOpen, setIsOpen }) {
             onClick={handleLogout}
             className="mt-auto flex items-center gap-3 px-4 py-3 
                        rounded-xl text-sm font-medium text-red-400 
-                       hover:bg-red-500/10 transition"
+                       hover:bg-red-500/10 transition cursor-pointer"
           >
             <FaSignOutAlt size={14} />
             Logout

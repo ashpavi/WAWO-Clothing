@@ -24,12 +24,18 @@ export default function ProductDetails() {
     );
   }
 
+  /* ADD TO CART */
   const handleAddToCart = () => {
+
+    const finalPrice =
+      product.isOnSale && product.discountPrice
+        ? product.discountPrice
+        : product.price;
 
     addToCart({
       id: product.id,
       name: product.name,
-      price: product.price,
+      price: finalPrice, 
       stock: product.stock,
       images: product.images,
       quantity: qty
@@ -37,7 +43,6 @@ export default function ProductDetails() {
 
     setAdded(true);
     setTimeout(() => setAdded(false), 2000);
-
   };
 
   return (
@@ -45,45 +50,33 @@ export default function ProductDetails() {
     <div className="max-w-7xl mx-auto px-4 md:px-8 py-10">
 
       {/* BREADCRUMB */}
-
       <div className="text-sm text-gray-500 mb-8">
 
         <Link to="/" className="hover:text-blue-600">Home</Link>
-
         <span className="mx-2">/</span>
 
         <Link to="/products" className="hover:text-blue-600">Products</Link>
-
         <span className="mx-2">/</span>
 
         <span className="text-gray-700">{product.name}</span>
 
       </div>
 
-
       {/* MAIN GRID */}
-
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-14">
 
         {/* IMAGE GALLERY */}
-
         <div>
 
-          {/* MAIN IMAGE */}
-
           <div className="bg-gray-100 rounded-xl overflow-hidden aspect-square">
-
             <img
               src={product.images?.[imageIndex]}
               alt={product.name}
               className="w-full h-full object-contain p-6"
             />
-
           </div>
 
-
           {/* THUMBNAILS */}
-
           <div className="flex gap-3 mt-4">
 
             {product.images?.map((img, i) => (
@@ -97,12 +90,10 @@ export default function ProductDetails() {
                   : "border-gray-200 hover:border-gray-400"
                 }`}
               >
-
                 <img
                   src={img}
                   className="w-full h-full object-cover"
                 />
-
               </button>
 
             ))}
@@ -111,10 +102,8 @@ export default function ProductDetails() {
 
         </div>
 
-
         {/* PRODUCT INFO */}
-
-        <div className="flex flex-col justify-center">
+        <div className="flex flex-col justify-start pt-10">
 
           <p className="text-sm text-gray-500 mb-2">
             {product.category}
@@ -124,17 +113,42 @@ export default function ProductDetails() {
             {product.name}
           </h1>
 
-          <p className="text-2xl font-bold text-blue-600 mb-6">
-            {formatPrice(product.price)}
-          </p>
+          {/* 🔥 PRICE SECTION */}
+          <div className="mb-4">
+            {product.isOnSale && product.discountPrice ? (
+              <div className="flex items-center gap-3">
+                <span className="text-gray-400 line-through text-lg">
+                  {formatPrice(product.price)}
+                </span>
+                <span className="text-blue-800 font-bold text-2xl">
+                  {formatPrice(product.discountPrice)}
+                </span>
+              </div>
+            ) : (
+              <p className="text-2xl font-bold text-blue-800">
+                {formatPrice(product.price)}
+              </p>
+            )}
+          </div>
+
+          {/* 🔥 STOCK */}
+          <div className="mb-6">
+            {product.stock > 0 ? (
+              <p className="text-green-600 text-sm font-medium">
+                {product.stock} items in stock
+              </p>
+            ) : (
+              <p className="text-red-500 text-sm font-medium">
+                Out of stock
+              </p>
+            )}
+          </div>
 
           <p className="text-gray-600 leading-relaxed mb-8">
             {product.description}
           </p>
 
-
           {/* QUANTITY */}
-
           <div className="mb-8">
 
             <p className="text-sm font-semibold mb-2">
@@ -153,7 +167,11 @@ export default function ProductDetails() {
               <span className="px-6">{qty}</span>
 
               <button
-                onClick={() => setQty((q) => q + 1)}
+                onClick={() =>
+                  setQty((q) =>
+                    q < product.stock ? q + 1 : q
+                  )
+                }
                 className="px-4 py-2 text-lg"
               >
                 +
@@ -163,19 +181,24 @@ export default function ProductDetails() {
 
           </div>
 
-
           {/* ADD TO CART */}
-
           <button
             onClick={handleAddToCart}
+            disabled={product.stock === 0}
             className={`w-full py-3 rounded-lg text-white font-semibold transition
-            ${added
+            ${product.stock === 0
+              ? "bg-gray-400 cursor-not-allowed"
+              : added
               ? "bg-green-600"
               : "bg-blue-600 hover:bg-blue-700"
             }`}
           >
 
-            {added ? "Added to Cart ✓" : "Add to Cart"}
+            {product.stock === 0
+              ? "Out of Stock"
+              : added
+              ? "Added to Cart ✓"
+              : "Add to Cart"}
 
           </button>
 
