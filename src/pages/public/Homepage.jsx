@@ -1,56 +1,87 @@
 
+import { useEffect, useState } from "react";
 
 import { useProducts } from "../../hooks/useProducts";
 
-import slide1 from "../../assets/slide1.png";
-import slide2 from "../../assets/slide2.png";
-import slide3 from "../../assets/slide3.png";
+import slide1 from "../../assets/1.png";
+import slide2 from "../../assets/2.png";
+import slide3 from "../../assets/3.png";
+import slide4 from "../../assets/4.png";
 import ProductCard from "../../components/store/ProductCard";
 import Carousel from "../../components/store/HeroCarousel";
 import AboutHeroArtwork from "../../components/store/AboutHeroArtwork";
 import { useCategories } from "../../hooks/useCategories";
 import { useNavigate } from "react-router-dom";
+import { subscribeHomepageHeroConfig } from "../../firebase/services/heroService";
+
+const fallbackSlides = [
+  {
+    tag: "New Collection",
+    title: "Refined Essentials For Modern Living",
+    subtitle:
+      "Crafted with precision and designed for those who value timeless quality.",
+    image: slide1
+  },
+  {
+    tag: "Signature Series",
+    title: "Elevate Your Everyday Experience",
+    subtitle:
+      "Minimal design. Maximum impact. Discover products made to inspire.",
+    image: slide2
+  },
+  {
+    tag: "Editor's Pick",
+    title: "Curated For Excellence",
+    subtitle:
+      "Hand-selected premium pieces tailored to your lifestyle.",
+    image: slide3
+  },
+  {
+    tag: "Limited Drop",
+    title: "Streetwear That Speaks",
+    subtitle:
+      "Fresh styles designed to stand out in every season.",
+    image: slide4
+  }
+];
 
 
 export default function HomePage() {
 
   const { products } = useProducts();
   const { categories } = useCategories();
+  const [heroSlides, setHeroSlides] = useState(fallbackSlides);
 
   const navigate = useNavigate();
 
   const featuredProducts = products.slice(0, 4);
+
+  useEffect(() => {
+    const unsubscribe = subscribeHomepageHeroConfig(
+      (data) => {
+        const validSlides = (data.slides || []).filter((slide) => slide.image);
+
+        if (validSlides.length > 0) {
+          setHeroSlides(validSlides);
+          return;
+        }
+
+        setHeroSlides(fallbackSlides);
+      },
+      () => {
+        setHeroSlides(fallbackSlides);
+      }
+    );
+
+    return () => unsubscribe();
+  }, []);
 
   return (
     <div className="space-y-16">
 
       {/* HERO */}
       <section>
-        <Carousel
-          slides={[
-            {
-              tag: "New Collection",
-              title: "Refined Essentials For Modern Living",
-              subtitle:
-                "Crafted with precision and designed for those who value timeless quality.",
-              image: slide1
-            },
-            {
-              tag: "Signature Series",
-              title: "Elevate Your Everyday Experience",
-              subtitle:
-                "Minimal design. Maximum impact. Discover products made to inspire.",
-              image: slide2
-            },
-            {
-              tag: "Editor's Pick",
-              title: "Curated For Excellence",
-              subtitle:
-                "Hand-selected premium pieces tailored to your lifestyle.",
-              image: slide3
-            }
-          ]}
-        />
+        <Carousel slides={heroSlides} />
       </section>
 
 

@@ -25,7 +25,7 @@ export default function Carousel({ slides }) {
   };
 
   return (
-    <div className="relative overflow-hidden bg-gray-100">
+    <div className="relative overflow-hidden bg-gray-900 w-full max-w-[1920px] mx-auto h-[60vh] sm:h-[70vh] lg:h-[min(100vh,1080px)]">
 
       {/* SLIDES */}
       <div
@@ -33,51 +33,36 @@ export default function Carousel({ slides }) {
         style={{ transform: `translateX(-${current * 100}%)` }}
       >
         {slides.map((slide, index) => (
-          <div
-            key={index}
-            className="min-w-full grid grid-cols-1 md:grid-cols-2 
-                       items-center 
-                       px-6 sm:px-10 lg:px-16 
-                       py-10 sm:py-14"   
-          >
+          <div key={index} className="min-w-full relative h-[60vh] sm:h-[70vh] lg:h-[min(100vh,1080px)]">
+            <img
+              src={slide.image}
+              alt={slide.title}
+              className="absolute inset-0 w-full h-full object-cover"
+            />
 
-            {/* LEFT */}
-            <div className="space-y-4 
-                text-center md:text-left 
-                max-w-lg mx-auto md:mx-0 
-                md:ml-10 lg:ml-30">
+            <div className="absolute inset-0 bg-gradient-to-r from-black/65 via-black/40 to-black/20" />
 
-              <span className="text-xs uppercase tracking-wider text-blue-600 font-semibold">
-                {slide.tag}
-              </span>
+            <div className="relative z-10 h-full flex items-center px-6 sm:px-10 lg:px-20">
+              <div className="space-y-4 text-left max-w-xl text-white">
+                <span className="text-xs uppercase tracking-wider text-blue-200 font-semibold">
+                  {slide.tag}
+                </span>
 
-              <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 leading-tight">
-                {slide.title}
-              </h2>
+                <h2 className="text-2xl sm:text-3xl md:text-5xl font-bold leading-tight">
+                  {slide.title}
+                </h2>
 
-              <p className="text-gray-600 text-sm sm:text-base max-w-md mx-auto md:mx-0">
-                {slide.subtitle}
-              </p>
+                <p className="text-gray-100 text-sm sm:text-base max-w-md">
+                  {slide.subtitle}
+                </p>
 
-              <Link to="/products">
-                <button className="mt-2 bg-black text-white px-6 py-2.5 rounded-full 
-                                   hover:bg-gray-800 transition-all duration-300 text-sm">
-                  Shop Collection
-                </button>
-              </Link>
+                <Link to="/products">
+                  <button className="mt-2 bg-white text-black px-6 py-2.5 rounded-full hover:bg-gray-200 transition-all duration-300 text-sm font-medium">
+                    Shop Collection
+                  </button>
+                </Link>
+              </div>
             </div>
-
-            {/* RIGHT IMAGE */}
-            <div className="flex justify-center md:justify-center mt-6 md:mt-0">              
-              <img
-                src={slide.image}
-                alt={slide.title}
-                className="w-64 sm:w-80 md:w-[380px]   
-                           rounded-2xl shadow-xl 
-                           hover:scale-105 transition duration-500"
-              />
-            </div>
-
           </div>
         ))}
       </div>
@@ -86,7 +71,7 @@ export default function Carousel({ slides }) {
       <button
         onClick={prevSlide}
         disabled={isAtFirstSlide}
-        className={`absolute left-4 top-1/2 -translate-y-1/2 bg-white shadow-md p-2.5 rounded-full transition ${
+        className={`absolute left-4 top-1/2 -translate-y-1/2 bg-white/90 shadow-md p-2.5 rounded-full transition ${
           isAtFirstSlide
             ? "opacity-40 cursor-not-allowed"
             : "hover:scale-110"
@@ -98,7 +83,7 @@ export default function Carousel({ slides }) {
       <button
         onClick={nextSlide}
         disabled={isAtLastSlide}
-        className={`absolute right-4 top-1/2 -translate-y-1/2 bg-white shadow-md p-2.5 rounded-full transition ${
+        className={`absolute right-4 top-1/2 -translate-y-1/2 bg-white/90 shadow-md p-2.5 rounded-full transition ${
           isAtLastSlide
             ? "opacity-40 cursor-not-allowed"
             : "hover:scale-110"
@@ -108,15 +93,15 @@ export default function Carousel({ slides }) {
       </button>
 
       {/* DOTS */}
-      <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2">
+      <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2 z-10">
         {slides.map((_, index) => (
           <div
             key={index}
             onClick={() => setCurrent(index)}
             className={`h-2 transition-all duration-300 cursor-pointer rounded-full ${
               index === current
-                ? "w-6 bg-black"
-                : "w-2 bg-gray-400"
+                ? "w-6 bg-white"
+                : "w-2 bg-white/50"
             }`}
           />
         ))}
