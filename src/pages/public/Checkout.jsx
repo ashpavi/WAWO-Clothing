@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   FaArrowLeft,
   FaCreditCard,
@@ -9,8 +9,8 @@ import { useNavigate } from "react-router-dom";
 import { useCart } from "../../hooks/useCart";
 import { createOrder } from "../../firebase/services/orderService";
 import { formatPrice } from "../../utils/formatPrice";
-import { bankTransferDetails } from "../../utils/bankTransferDetails";
 import { useAuth } from "../../hooks/useAuth";
+import { getBankDetails } from "../../firebase/services/bankService";
 
 export default function Checkout() {
 
@@ -20,6 +20,8 @@ export default function Checkout() {
 
   const [loading, setLoading] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState("bankTransfer");
+
+  const [bankDetails, setBankDetails] = useState(null);
 
   const [shippingData, setShippingData] = useState({
     fullName: "",
@@ -32,6 +34,17 @@ export default function Checkout() {
 
   const [errors, setErrors] = useState({});
 
+  /* ================= FETCH BANK DETAILS ================= */
+
+  useEffect(() => {
+    const fetchBankDetails = async () => {
+      const data = await getBankDetails();
+      setBankDetails(data);
+    };
+
+    fetchBankDetails();
+  }, []);
+
   /* ================= CALCULATIONS ================= */
 
   const subtotal = cartItems.reduce(
@@ -39,7 +52,11 @@ export default function Checkout() {
     0
   );
 
-  const COD_FEE = paymentMethod === "cod" ? 350 : 0;
+  const isFreeDelivery = subtotal >= 5000;
+
+  const COD_FEE =
+    paymentMethod === "cod" && !isFreeDelivery ? 350 : 0;
+
   const total = subtotal + COD_FEE;
 
   /* ================= VALIDATION ================= */
@@ -97,7 +114,7 @@ export default function Checkout() {
     try {
 
       const paymentDetails =
-        paymentMethod === "bankTransfer" ? bankTransferDetails : null;
+        paymentMethod === "bankTransfer" ? bankDetails : null;
 
       const order = {
         customer: shippingData,
@@ -251,7 +268,7 @@ export default function Checkout() {
               </div>
 
               {/* 🔥 BANK TRANSFER UI */}
-              {paymentMethod === "bankTransfer" && (
+              {paymentMethod === "bankTransfer" && bankDetails && (
                 <div className="mt-4 p-5 border rounded-xl bg-blue-50 space-y-4">
 
                   <h4 className="font-semibold text-blue-700">
@@ -259,10 +276,10 @@ export default function Checkout() {
                   </h4>
 
                   <div className="text-sm text-gray-700 space-y-1">
-                    <p><b>Bank:</b> {bankTransferDetails.bankName}</p>
-                    <p><b>Branch:</b> {bankTransferDetails.branch}</p>
-                    <p><b>Account Number:</b> {bankTransferDetails.accountNumber}</p>
-                    <p><b>Account Holder:</b> {bankTransferDetails.accountHolder}</p>
+                    <p><b>Bank:</b> {bankDetails.bankName}</p>
+                    <p><b>Branch:</b> {bankDetails.branch}</p>
+                    <p><b>Account Number:</b> {bankDetails.accountNumber}</p>
+                    <p><b>Account Holder:</b> {bankDetails.accountHolder}</p>
                   </div>
 
                   <div className="text-sm text-gray-600 bg-white p-3 rounded-lg border">
@@ -300,10 +317,23 @@ export default function Checkout() {
               <span>{formatPrice(subtotal)}</span>
             </div>
 
-            {paymentMethod==="cod" && (
+            {!isFreeDelivery && (
+              <p className="text-sm text-gray-500">
+                Spend {formatPrice(5000 - subtotal)} more to get FREE delivery 🚚
+              </p>
+            )}
+
+            {paymentMethod === "cod" && !isFreeDelivery && (
               <div className="flex justify-between">
                 <span>COD Fee</span>
                 <span>{formatPrice(350)}</span>
+              </div>
+            )}
+
+            {isFreeDelivery && (
+              <div className="flex justify-between text-green-600 font-medium">
+                <span>Delivery</span>
+                <span>FREE</span>
               </div>
             )}
 
