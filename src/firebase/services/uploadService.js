@@ -36,3 +36,17 @@ export const uploadCategoryImage = async (file) => {
   return url;
 
 };
+
+export const uploadHeroImage = async (file, slotIndex) => {
+
+  const fileName = `hero/homepage/slot-${slotIndex + 1}-${Date.now()}-${file.name}`;
+
+  const storageRef = ref(storage, fileName);
+
+  await uploadBytes(storageRef, file);
+
+  const url = await getDownloadURL(storageRef);
+
+  return url;
+
+};

@@ -9,8 +9,9 @@ const aboutSectionsStyles = `
     --purple: #4c1d95;
     --purple-mid: #6d28d9;
     --purple-light: #ede9fe;
-    --gold: #f59e0b;
-    --gold-light: #fef3c7;
+    --gold: #6d28d9;
+    --gold-light: #ede9fe;
+    --editorial-blue: #1f3f9a;
     --dark: #1a0a2e;
     --text: #2d1b69;
     --muted: #6b7280;
@@ -41,7 +42,7 @@ const aboutSectionsStyles = `
     bottom: -100px; right: -80px;
     width: 350px; height: 350px;
     border-radius: 50%;
-    background: radial-gradient(circle, rgba(245,158,11,0.08) 0%, transparent 70%);
+    background: radial-gradient(circle, rgba(109,40,217,0.08) 0%, transparent 70%);
   }
 
   .section-label {
@@ -50,7 +51,7 @@ const aboutSectionsStyles = `
     font-weight: 500;
     letter-spacing: 3px;
     text-transform: uppercase;
-    color: var(--gold);
+    color: #4DA3FF;
     margin-bottom: 16px;
     display: block;
   }
@@ -65,8 +66,10 @@ const aboutSectionsStyles = `
   }
 
   .values-title em {
-    font-style: italic;
-    color: var(--gold);
+    font-family: 'Playfair Display', serif;
+    font-style: normal;
+    font-weight: 700;
+    color: #4DA3FF;
   }
 
   .values-subtitle {
@@ -91,6 +94,7 @@ const aboutSectionsStyles = `
     background: #faf7ff;
     transition: background 0.3s ease, transform 0.3s ease;
     cursor: default;
+    font-family: 'Playfair Display', serif;
   }
 
   .value-card:hover {
@@ -102,7 +106,8 @@ const aboutSectionsStyles = `
     width: 48px;
     height: 48px;
     border-radius: 12px;
-    background: rgba(245,158,11,0.15);
+    background: rgba(109,40,217,0.12);
+    color: var(--purple-mid);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -111,14 +116,15 @@ const aboutSectionsStyles = `
   }
 
   .value-name {
-    font-family: 'Playfair Display', serif;
     font-size: 22px;
     font-weight: 700;
     color: var(--dark);
+    letter-spacing: 0.2px;
     margin-bottom: 12px;
   }
 
   .value-desc {
+    font-family: 'DM Sans', sans-serif;
     font-size: 14px;
     color: #4b5563;
     line-height: 1.75;
@@ -126,9 +132,12 @@ const aboutSectionsStyles = `
 
   .value-number {
     font-family: 'Playfair Display', serif;
-    font-size: 64px;
+    font-size: clamp(54px, 4.5vw, 68px);
     font-weight: 700;
-    color: rgba(109,40,217,0.12);
+    font-variant-numeric: oldstyle-nums proportional-nums;
+    font-feature-settings: "onum" 1, "pnum" 1;
+    letter-spacing: 0.5px;
+    color: rgba(109,40,217,0.42);
     position: absolute;
     top: 12px;
     right: 20px;
@@ -157,7 +166,10 @@ const aboutSectionsStyles = `
   }
 
   .how-title span {
-    color: var(--purple-mid);
+    font-family: 'Playfair Display', serif;
+    font-style: normal;
+    font-weight: 700;
+    color: #4DA3FF;
   }
 
   .how-sub {
@@ -213,6 +225,12 @@ const aboutSectionsStyles = `
     transition: background 0.3s;
   }
 
+  .step-icon {
+    color: var(--purple-mid);
+    font-size: 30px;
+    line-height: 1;
+  }
+
   .how-step:hover .step-circle {
     background: var(--purple-mid);
   }
@@ -222,8 +240,8 @@ const aboutSectionsStyles = `
     top: -6px; right: -6px;
     width: 26px; height: 26px;
     border-radius: 50%;
-    background: var(--gold);
-    color: var(--dark);
+    background: var(--purple-mid);
+    color: var(--white);
     font-size: 11px;
     font-weight: 700;
     display: flex;
@@ -239,7 +257,12 @@ const aboutSectionsStyles = `
     margin-bottom: 10px;
   }
 
+  .step-title .accent-amp {
+    color: #4DA3FF;
+  }
+
   .step-desc {
+    font-family: 'DM Sans', sans-serif;
     font-size: 14px;
     color: var(--muted);
     line-height: 1.7;
@@ -283,17 +306,17 @@ const values = [
 
 const steps = [
   {
-    emoji: "🛍",
+    emoji: "✦",
     title: "Discover Your Style",
     desc: "Browse curated collections built around your vibe, season, and budget.",
   },
   {
-    emoji: "📦",
+    emoji: "◈",
     title: "We Pack With Care",
     desc: "Your order is hand-checked and eco-packed before it heads your way.",
   },
   {
-    emoji: "✨",
+    emoji: "✧",
     title: "Wear & Own It",
     desc: "Delivered to your door. Loved from day one. Free returns, always.",
   },
@@ -327,6 +350,22 @@ function HowItWorksSection() {
   const ref = useRef(null);
   const [visible, setVisible] = useState(false);
 
+  const renderStepTitle = (title) => {
+    if (!title.includes("&")) {
+      return title;
+    }
+
+    const [left, right] = title.split("&");
+
+    return (
+      <>
+        {left}
+        <span className="accent-amp">&</span>
+        {right}
+      </>
+    );
+  };
+
   useEffect(() => {
     const obs = new IntersectionObserver(
       ([e]) => {
@@ -343,7 +382,7 @@ function HowItWorksSection() {
   return (
     <section className="how-section" ref={ref}>
       <div className="how-header">
-        <span className="section-label" style={{ color: "var(--purple-mid)" }}>The WAWO Experience</span>
+        <span className="section-label" style={{ color: "#4DA3FF" }}>The WAWO Experience</span>
         <h2 className="how-title">
           Shopping made <span>effortless</span>
         </h2>
@@ -354,10 +393,11 @@ function HowItWorksSection() {
           <Fragment key={s.title}>
             <div className={`how-step${visible ? " visible" : ""}`}>
               <div className="step-circle">
-                <span>{s.emoji}</span>
+                <span className="step-icon">{s.emoji}</span>
                 <span className="step-num">{i + 1}</span>
               </div>
-              <div className="step-title">{s.title}</div>
+              <div className="step-title">{renderStepTitle(s.title)}</div>
+              
               <div className="step-desc">{s.desc}</div>
             </div>
             {i < steps.length - 1 && <div className="how-arrow">→</div>}
