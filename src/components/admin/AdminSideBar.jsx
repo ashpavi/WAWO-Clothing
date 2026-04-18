@@ -7,6 +7,7 @@ import {
   FaUsers,
   FaSignOutAlt,
   FaTimes,
+  FaImage
   FaUniversity
 } from "react-icons/fa";
 import { MdOutlineMessage } from "react-icons/md";
@@ -160,6 +161,21 @@ export default function AdminSideBar({ isOpen, setIsOpen }) {
             >
               <MdOutlineMessage size={14} />
               Messages
+            </NavLink>
+
+            <NavLink
+              to="/admin/hero-settings"
+              onClick={() => setIsOpen(false)}
+              className={({ isActive }) =>
+                `${linkStyle} ${
+                  isActive
+                    ? "bg-blue-600 text-white"
+                    : "text-gray-300 hover:bg-gray-800"
+                }`
+              }
+            >
+              <FaImage size={14} />
+              Hero Banner
             </NavLink>
 
             <NavLink
