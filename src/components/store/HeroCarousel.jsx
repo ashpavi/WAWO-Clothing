@@ -25,7 +25,7 @@ export default function Carousel({ slides }) {
   };
 
   return (
-    <div className="relative overflow-hidden bg-gray-900 w-full max-w-[1920px] mx-auto h-[60vh] sm:h-[70vh] lg:h-[min(100vh,1080px)]">
+    <div className="relative overflow-hidden bg-gray-900 w-full max-w-[1920px] mx-auto aspect-video">
 
       {/* SLIDES */}
       <div
@@ -33,26 +33,26 @@ export default function Carousel({ slides }) {
         style={{ transform: `translateX(-${current * 100}%)` }}
       >
         {slides.map((slide, index) => (
-          <div key={index} className="min-w-full relative h-[60vh] sm:h-[70vh] lg:h-[min(100vh,1080px)]">
+          <div key={index} className="min-w-full relative aspect-video">
             <img
               src={slide.image}
               alt={slide.title}
-              className="absolute inset-0 w-full h-full object-cover"
+              className="absolute inset-0 w-full h-full object-contain bg-gray-900"
             />
 
             <div className="absolute inset-0 bg-gradient-to-r from-black/65 via-black/40 to-black/20" />
 
-            <div className="relative z-10 h-full flex items-center px-6 sm:px-10 lg:px-20">
-              <div className="space-y-4 text-left max-w-xl text-white">
-                <span className="text-xs uppercase tracking-wider text-blue-200 font-semibold">
+            <div className="relative z-10 h-full flex items-center justify-center sm:justify-start px-6 sm:px-10 lg:px-20">
+              <div className="space-y-4 max-w-xl text-white mx-auto sm:mx-0 w-full">
+                <span className="block text-xs uppercase tracking-wider text-blue-200 font-semibold text-center sm:text-left">
                   {slide.tag}
                 </span>
 
-                <h2 className="text-2xl sm:text-3xl md:text-5xl font-bold leading-tight">
+                <h2 className="text-2xl sm:text-3xl md:text-5xl font-bold leading-tight text-center sm:text-left">
                   {slide.title}
                 </h2>
 
-                <p className="text-gray-100 text-sm sm:text-base max-w-md">
+                <p className="text-gray-100 text-sm sm:text-base max-w-md mx-auto sm:mx-0 text-center sm:text-left">
                   {slide.subtitle}
                 </p>
 
