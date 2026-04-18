@@ -7,7 +7,7 @@ import {
   FaUsers,
   FaSignOutAlt,
   FaTimes,
-  FaImage
+  FaImage,
   FaUniversity
 } from "react-icons/fa";
 import { MdOutlineMessage } from "react-icons/md";
