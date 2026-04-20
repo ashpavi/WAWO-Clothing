@@ -7,8 +7,11 @@ export default function OrderSummary({ subtotal }) {
 
   const isDisabled = subtotal === 0;
 
-  // ✅ ADD THIS
   const isFreeDelivery = subtotal >= 5000;
+
+  const DELIVERY_FEE = !isFreeDelivery && subtotal > 0 ? 350 : 0;
+
+  const total = subtotal + DELIVERY_FEE;
 
   return (
     <div className="bg-white border rounded-xl p-5 shadow-sm space-y-5">
@@ -26,15 +29,24 @@ export default function OrderSummary({ subtotal }) {
       {/* 💡 FREE DELIVERY MESSAGE */}
       {!isFreeDelivery && subtotal > 0 && (
         <p className="text-sm text-orange-600 font-medium">
-          Spend {formatPrice(5000 - subtotal)} more to get FREE delivery on COD
+          Spend {formatPrice(5000 - subtotal)} more to get FREE delivery 🚚
         </p>
       )}
 
-      {/*  FREE DELIVERY UNLOCKED */}
-      {isFreeDelivery && (
-        <p className="text-sm text-green-600 font-medium">
-           FREE delivery available for COD orders!
-        </p>
+      {/* 🚚 DELIVERY FEE */}
+      {!isFreeDelivery && subtotal > 0 && (
+        <div className="flex justify-between text-gray-600">
+          <span>Delivery</span>
+          <span>{formatPrice(350)}</span>
+        </div>
+      )}
+
+      {/* ✅ FREE DELIVERY UNLOCKED */}
+      {isFreeDelivery && subtotal > 0 && (
+        <div className="flex justify-between text-green-600 font-medium">
+          <span>Delivery</span>
+          <span>FREE</span>
+        </div>
       )}
 
       <hr />
@@ -42,7 +54,7 @@ export default function OrderSummary({ subtotal }) {
       {/* TOTAL */}
       <div className="flex justify-between font-bold text-lg">
         <span>Total</span>
-        <span>{formatPrice(subtotal)}</span>
+        <span>{formatPrice(total)}</span>
       </div>
 
       {/* CHECKOUT BUTTON */}

@@ -20,7 +20,6 @@ export default function Checkout() {
 
   const [loading, setLoading] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState("bankTransfer");
-
   const [bankDetails, setBankDetails] = useState(null);
 
   const [shippingData, setShippingData] = useState({
@@ -35,18 +34,15 @@ export default function Checkout() {
   const [errors, setErrors] = useState({});
 
   /* ================= FETCH BANK DETAILS ================= */
-
   useEffect(() => {
     const fetchBankDetails = async () => {
       const data = await getBankDetails();
       setBankDetails(data);
     };
-
     fetchBankDetails();
   }, []);
 
   /* ================= CALCULATIONS ================= */
-
   const subtotal = cartItems.reduce(
     (acc, item) => acc + item.price * item.quantity,
     0
@@ -54,15 +50,12 @@ export default function Checkout() {
 
   const isFreeDelivery = subtotal >= 5000;
 
-  const COD_FEE =
-    paymentMethod === "cod" && !isFreeDelivery ? 350 : 0;
+  const DELIVERY_FEE = !isFreeDelivery ? 350 : 0;
 
-  const total = subtotal + COD_FEE;
+  const total = subtotal + DELIVERY_FEE;
 
   /* ================= VALIDATION ================= */
-
   const validateForm = () => {
-
     const newErrors = {};
 
     if (!shippingData.fullName.trim())
@@ -96,7 +89,6 @@ export default function Checkout() {
   };
 
   /* ================= PLACE ORDER ================= */
-
   const handlePlaceOrder = async () => {
 
     if (!validateForm()) return;
@@ -122,7 +114,7 @@ export default function Checkout() {
         paymentMethod,
         paymentDetails,
         subtotal,
-        codFee: COD_FEE,
+        deliveryFee: DELIVERY_FEE,
         total,
         status: "Processing",
         userId: currentUser ? currentUser.uid : null,
@@ -141,7 +133,7 @@ export default function Checkout() {
           paymentDetails,
           items: cartItems,
           subtotal,
-          codFee: COD_FEE,
+          deliveryFee: DELIVERY_FEE,
           total,
           date: new Date().toISOString()
         }
@@ -267,7 +259,7 @@ export default function Checkout() {
 
               </div>
 
-              {/* 🔥 BANK TRANSFER UI */}
+              {/* BANK TRANSFER UI */}
               {paymentMethod === "bankTransfer" && bankDetails && (
                 <div className="mt-4 p-5 border rounded-xl bg-blue-50 space-y-4">
 
@@ -281,24 +273,6 @@ export default function Checkout() {
                     <p><b>Account Number:</b> {bankDetails.accountNumber}</p>
                     <p><b>Account Holder:</b> {bankDetails.accountHolder}</p>
                   </div>
-
-                  <div className="text-sm text-gray-600 bg-white p-3 rounded-lg border">
-                    <p className="font-medium mb-1">Instructions:</p>
-                    <ul className="list-disc pl-5 space-y-1">
-                      <li>Complete the bank transfer using above details</li>
-                      <li>Send your deposit slip via WhatsApp after payment</li>
-                      <li>Mention your <b>Name</b> and <b>City</b> as reference</li>
-                    </ul>
-                  </div>
-
-                  <a
-                    href="https://wa.me/94765358085"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg text-sm"
-                  >
-                    💬 Send Slip via WhatsApp
-                  </a>
 
                 </div>
               )}
@@ -323,9 +297,9 @@ export default function Checkout() {
               </p>
             )}
 
-            {paymentMethod === "cod" && !isFreeDelivery && (
+            {!isFreeDelivery && (
               <div className="flex justify-between">
-                <span>COD Fee</span>
+                <span>Delivery</span>
                 <span>{formatPrice(350)}</span>
               </div>
             )}
