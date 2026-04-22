@@ -49,6 +49,7 @@ import SuperAdminLayout from "../layouts/SuperAdminLayout.jsx";
 import Overview from "../pages/superAdmin/Overview.jsx";
 import ManageAdmins from "../pages/superAdmin/ManageAdmins.jsx";
 import AdminBankDetails from "../pages/admin/AdminBankDetails.jsx";
+import AdminPromoSettings from "../pages/admin/AdminPromoSettings.jsx";
 
 
 export default function AppRoutes() {
@@ -114,6 +115,7 @@ export default function AppRoutes() {
         <Route path="/admin/users" element={<AdminUser />} />
         <Route path="/admin/messages" element={<AdminMessages />} />
         <Route path="/admin/hero-settings" element={<AdminHeroSettings />} />
+        <Route path="/admin/promo-settings" element={<AdminPromoSettings />} />
         <Route path="/admin/bank-details" element={<AdminBankDetails />} />
       </Route>
 

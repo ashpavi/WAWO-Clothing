@@ -50,3 +50,13 @@ export const uploadHeroImage = async (file, slotIndex) => {
   return url;
 
 };
+
+export const uploadPromoImage = async (file) => {
+  const fileName = `promo/${Date.now()}-${file.name}`;
+
+  const storageRef = ref(storage, fileName);
+
+  await uploadBytes(storageRef, file);
+
+  return await getDownloadURL(storageRef);
+};
