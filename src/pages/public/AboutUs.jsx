@@ -330,7 +330,7 @@ function ValuesSection() {
         Clothing with a <em>purpose</em>
       </h2>
       <p className="values-subtitle">
-        WAWO was built on four pillars that guide every decision - from the thread we choose to the stories we tell.
+        WAVO was built on four pillars that guide every decision - from the thread we choose to the stories we tell.
       </p>
       <div className="values-grid">
         {values.map((v, i) => (
@@ -382,7 +382,7 @@ function HowItWorksSection() {
   return (
     <section className="how-section" ref={ref}>
       <div className="how-header">
-        <span className="section-label" style={{ color: "#4DA3FF" }}>The WAWO Experience</span>
+        <span className="section-label" style={{ color: "#4DA3FF" }}>The WAVO Experience</span>
         <h2 className="how-title">
           Shopping made <span>effortless</span>
         </h2>

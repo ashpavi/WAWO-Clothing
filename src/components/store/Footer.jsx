@@ -14,7 +14,7 @@ const Footer = () => {
         <div>
           <img
             src={logo}
-            alt="Wawo Clothing"
+            alt="Wavo Clothing"
             className="w-14 h-14 object-contain rounded-full bg-white p-1 shadow-sm"
           />
 
@@ -100,7 +100,7 @@ const Footer = () => {
 
       {/* BOTTOM */}
       <div className="max-w-7xl mx-auto px-6 py-6 flex flex-col md:flex-row justify-between items-center text-xs text-gray-500">
-        <p>© 2026 WAWO Clothing</p>
+        <p>© 2026 WAVO Clothing</p>
         <p>Designed for modern streetwear culture</p>
       </div>
     </footer>
