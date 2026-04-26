@@ -132,19 +132,19 @@ export default function AdminProducts() {
           Product Management
         </h1>
 
-        <div className="flex gap-4">
+        <div className="flex flex-col sm:flex-row gap-3 w-full">
 
           <input
             type="text"
             placeholder="Search products..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="border px-4 py-2 rounded-lg"
+            className="w-full border px-4 py-2 rounded-lg"
           />
 
           <Link
             to="/admin/products/add"
-            className="flex items-center gap-2 bg-blue-600 text-white px-5 py-2 rounded-lg hover:bg-blue-700"
+            className="flex items-center justify-center gap-2 bg-blue-600 text-white px-5 py-2 rounded-lg hover:bg-blue-700 whitespace-nowrap"
           >
             <FaPlus size={14} />
             Add Product
@@ -154,110 +154,159 @@ export default function AdminProducts() {
 
       </div>
 
-      {/* TABLE */}
-      <div className="bg-white rounded-xl shadow border overflow-x-auto">
+      {/* TABLE */}      
+      <div className="bg-white rounded-xl shadow border">
 
-        <table className="w-full text-left">
+        {/* DESKTOP TABLE */}
+        <div className="hidden md:block overflow-x-auto">
+          <table className="w-full text-left">
 
-          <thead className="bg-gray-50 text-sm text-gray-600 uppercase">
+            <thead className="bg-gray-50 text-sm text-gray-600 uppercase">
+              <tr>
+                <th className="p-4">Product</th>
+                <th className="p-4">Brand</th>
+                <th className="p-4">Category</th>
+                <th className="p-4">Price</th>
+                <th className="p-4">Stock</th>
+                <th className="p-4 text-center">Actions</th>
+              </tr>
+            </thead>
 
-            <tr>
-              <th className="p-4">Product</th>
-              <th className="p-4">Brand</th>
-              <th className="p-4">Category</th>
-              <th className="p-4">Price</th>
-              <th className="p-4">Stock</th>
-              <th className="p-4 text-center">Actions</th>
-            </tr>
+            <tbody>
+              {filteredProducts.map((product) => (
+                <tr key={product.id} className="border-t">
 
-          </thead>
+                  <td className="p-4 flex items-center gap-4">
+                    <img
+                      src={product.images?.[0]}
+                      className="w-14 h-14 rounded-lg object-cover border"
+                    />
+                    <span className="font-medium">{product.name}</span>
+                  </td>
 
-          <tbody>
+                  <td className="p-4">{product.brand}</td>
+                  <td className="p-4">{product.category}</td>
 
-            {filteredProducts.map((product) => (
+                  <td className="p-4 font-semibold whitespace-nowrap">
+                    {product.isOnSale && product.discountPrice ? (
+                      <div className="flex flex-col">
+                        <span className="line-through text-gray-400 text-sm">
+                          LKR {product.price}
+                        </span>
+                        <span className="text-black">
+                          LKR {product.discountPrice}
+                        </span>
+                      </div>
+                    ) : (
+                      <span>LKR {product.price}</span>
+                    )}
+                  </td>
 
-              <tr key={product.id} className="border-t">
+                  <td className="p-4">
+                    {product.stock > 0 ? (
+                      <span className="text-green-600">
+                        {product.stock} in stock
+                      </span>
+                    ) : (
+                      <span className="text-red-500">Out of stock</span>
+                    )}
+                  </td>
 
-                <td className="p-4 flex items-center gap-4">
+                  <td className="p-4">
+                    <div className="flex justify-center gap-4">
+                      <button onClick={() => setEditingProduct(product)} className="text-blue-600">
+                        <FaEdit />
+                      </button>
+                      <button onClick={() => handleDelete(product.id)} className="text-red-500">
+                        <FaTrash />
+                      </button>
+                    </div>
+                  </td>
 
-                  <img
-                    src={product.images?.[0]}
-                    alt={product.name}
-                    className="w-14 h-14 rounded-lg object-cover border"
-                  />
+                </tr>
+              ))}
+            </tbody>
 
-                  <span className="font-medium">
+          </table>
+        </div>
+
+        {/* MOBILE CARDS */}
+        <div className="md:hidden space-y-4 p-4">
+
+          {filteredProducts.map((product) => (
+            <div key={product.id} className="border rounded-xl p-4 shadow-sm">
+
+              <div className="flex gap-4">
+
+                <img
+                  src={product.images?.[0]}
+                  className="w-20 h-20 rounded-lg object-cover border shrink-0"
+                />
+
+                <div className="flex-1 min-w-0">
+
+                  <p className="font-semibold text-gray-900 break-words">
                     {product.name}
-                  </span>
+                  </p>
 
-                </td>
+                  <p className="text-sm text-gray-500">
+                    {product.brand}
+                  </p>
 
-                <td className="p-4">{product.brand}</td>
+                  <p className="text-xs text-gray-400 mt-1">
+                    {product.category}
+                  </p>
 
-                <td className="p-4">{product.category}</td>
-
-                <td className="p-4 font-semibold whitespace-nowrap">
-                  {product.isOnSale && product.discountPrice ? (
-                    <>
-                      <span className="line-through text-gray-400 mr-2">
+                  <div className="mt-2">
+                    {product.isOnSale && product.discountPrice ? (
+                      <div className="flex flex-col">
+                        <span className="line-through text-gray-400 text-sm">
+                          LKR {product.price}
+                        </span>
+                        <span className="font-semibold">
+                          LKR {product.discountPrice}
+                        </span>
+                      </div>
+                    ) : (
+                      <span className="font-semibold">
                         LKR {product.price}
                       </span>
-                      <span className="text-black">
-                        LKR {product.discountPrice}
-                      </span>
-                    </>
-                  ) : (
-                    <span>LKR {product.price}</span>
-                  )}
-                </td>
-
-                <td className="p-4">
-
-                  {product.stock > 0 ? (
-                    <span className="text-green-600">
-                      {product.stock} in stock
-                    </span>
-                  ) : (
-                    <span className="text-red-500">
-                      Out of stock
-                    </span>
-                  )}
-
-                </td>
-
-                <td className="p-4">
-
-                  <div className="flex justify-center gap-4">
-
-                    <button
-                      onClick={() => {
-                        setEditingProduct(product);
-                        setPreviewImages(product.images || []);
-                        setImageFiles([]);
-                      }}
-                      className="text-blue-600"
-                    >
-                      <FaEdit />
-                    </button>
-
-                    <button
-                      onClick={() => handleDelete(product.id)}
-                      className="text-red-500"
-                    >
-                      <FaTrash />
-                    </button>
-
+                    )}
                   </div>
 
-                </td>
+                  <p className={`text-sm mt-1 ${
+                    product.stock > 0 ? "text-green-600" : "text-red-500"
+                  }`}>
+                    {product.stock > 0 ? `${product.stock} in stock` : "Out of stock"}
+                  </p>
 
-              </tr>
+                </div>
 
-            ))}
+              </div>
 
-          </tbody>
+              {/* ACTIONS */}
+              <div className="flex justify-end gap-4 mt-4 border-t pt-3">
 
-        </table>
+                <button
+                  onClick={() => setEditingProduct(product)}
+                  className="flex items-center gap-1 text-blue-600 text-sm"
+                >
+                  <FaEdit /> Edit
+                </button>
+
+                <button
+                  onClick={() => handleDelete(product.id)}
+                  className="flex items-center gap-1 text-red-500 text-sm"
+                >
+                  <FaTrash /> Delete
+                </button>
+
+              </div>
+
+            </div>
+          ))}
+
+        </div>
 
       </div>
 

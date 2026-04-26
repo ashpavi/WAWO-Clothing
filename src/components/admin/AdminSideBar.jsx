@@ -11,7 +11,6 @@ import {
   FaUniversity
 } from "react-icons/fa";
 import { MdOutlineMessage } from "react-icons/md";
-
 import logo from "../../assets/logo.png";
 import { useAuth } from "../../hooks/useAuth";
 
@@ -20,10 +19,9 @@ export default function AdminSideBar({ isOpen, setIsOpen }) {
   const navigate = useNavigate();
   const { logoutUser } = useAuth();
 
-  const linkStyle = 
+  const linkStyle =
     "flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all duration-200";
 
-  /* ================= LOGOUT ================= */
   const handleLogout = async () => {
     try {
       await logoutUser();
@@ -45,7 +43,7 @@ export default function AdminSideBar({ isOpen, setIsOpen }) {
 
       {/* ================= SIDEBAR ================= */}
       <div
-        className={`fixed lg:static top-0 left-0 h-screen w-64 
+        className={`fixed lg:static top-0 left-0 h-[100dvh] w-64 
                     bg-gray-900 text-white shadow-xl z-50 
                     transform transition-transform duration-300
                     ${
@@ -54,25 +52,22 @@ export default function AdminSideBar({ isOpen, setIsOpen }) {
                         : "-translate-x-full lg:translate-x-0"
                     }`}
       >
-        <div className="flex flex-col h-full px-6 py-6">
+        {/* ✅ SCROLL FIX ADDED HERE */}
+        <div className="flex flex-col h-full px-6 py-6 overflow-y-auto">
 
           {/* ================= BRAND ================= */}
           <div className="flex items-center justify-between lg:justify-start mb-10">
 
             <div className="flex items-center gap-3">
-
               <img
                 src={logo}
-                alt="LuxeStore Logo"
-                className="w-18 h-18 object-contain rounded-full  p-1 shadow-sm"
+                alt="Logo"
+                className="w-18 h-18 object-contain rounded-full p-1 shadow-sm"
               />
 
-              <div>
-                <h2 className="text-base font-semibold text-white">
-                  Admin Panel
-                </h2>
-              </div>
-
+              <h2 className="text-base font-semibold text-white">
+                Admin Panel
+              </h2>
             </div>
 
             <button
@@ -81,144 +76,79 @@ export default function AdminSideBar({ isOpen, setIsOpen }) {
             >
               <FaTimes />
             </button>
-
           </div>
 
           {/* ================= NAVIGATION ================= */}
           <nav className="space-y-2 flex-1">
 
-            <NavLink
-              to="/admin/adminDashboard"
-              end
-              onClick={() => setIsOpen(false)}
+            <NavLink to="/admin/adminDashboard" end onClick={() => setIsOpen(false)}
               className={({ isActive }) =>
-                `${linkStyle} ${
-                  isActive
-                    ? "bg-blue-600 text-white"
-                    : "text-gray-300 hover:bg-gray-800"
-                }`
-              }
-            >
+                `${linkStyle} ${isActive ? "bg-blue-600 text-white" : "text-gray-300 hover:bg-gray-800"}`
+              }>
               <FaTachometerAlt size={14} />
               Dashboard
             </NavLink>
 
-            <NavLink
-              to="/admin/products"
-              onClick={() => setIsOpen(false)}
+            <NavLink to="/admin/products" onClick={() => setIsOpen(false)}
               className={({ isActive }) =>
-                `${linkStyle} ${
-                  isActive
-                    ? "bg-blue-600 text-white"
-                    : "text-gray-300 hover:bg-gray-800"
-                }`
-              }
-            >
+                `${linkStyle} ${isActive ? "bg-blue-600 text-white" : "text-gray-300 hover:bg-gray-800"}`
+              }>
               <FaBoxOpen size={14} />
               Products
             </NavLink>
 
-            <NavLink
-              to="/admin/categories"
-              onClick={() => setIsOpen(false)}
+            <NavLink to="/admin/categories" onClick={() => setIsOpen(false)}
               className={({ isActive }) =>
-                `${linkStyle} ${
-                  isActive
-                    ? "bg-blue-600 text-white"
-                    : "text-gray-300 hover:bg-gray-800"
-                }`
-              }
-            >
+                `${linkStyle} ${isActive ? "bg-blue-600 text-white" : "text-gray-300 hover:bg-gray-800"}`
+              }>
               <FaTags size={14} />
               Categories
             </NavLink>
 
-            <NavLink
-              to="/admin/orders"
-              onClick={() => setIsOpen(false)}
+            <NavLink to="/admin/orders" onClick={() => setIsOpen(false)}
               className={({ isActive }) =>
-                `${linkStyle} ${
-                  isActive
-                    ? "bg-blue-600 text-white"
-                    : "text-gray-300 hover:bg-gray-800"
-                }`
-              }
-            >
+                `${linkStyle} ${isActive ? "bg-blue-600 text-white" : "text-gray-300 hover:bg-gray-800"}`
+              }>
               <FaShoppingCart size={14} />
               Orders
             </NavLink>
 
-            <NavLink
-              to="/admin/messages"
-              onClick={() => setIsOpen(false)}
+            <NavLink to="/admin/messages" onClick={() => setIsOpen(false)}
               className={({ isActive }) =>
-                `${linkStyle} ${
-                  isActive
-                    ? "bg-blue-600 text-white"
-                    : "text-gray-300 hover:bg-gray-800"
-                }`
-              }
-            >
+                `${linkStyle} ${isActive ? "bg-blue-600 text-white" : "text-gray-300 hover:bg-gray-800"}`
+              }>
               <MdOutlineMessage size={14} />
               Messages
             </NavLink>
 
-            <NavLink
-              to="/admin/hero-settings"
-              onClick={() => setIsOpen(false)}
+            <NavLink to="/admin/hero-settings" onClick={() => setIsOpen(false)}
               className={({ isActive }) =>
-                `${linkStyle} ${
-                  isActive
-                    ? "bg-blue-600 text-white"
-                    : "text-gray-300 hover:bg-gray-800"
-                }`
-              }
-            >
+                `${linkStyle} ${isActive ? "bg-blue-600 text-white" : "text-gray-300 hover:bg-gray-800"}`
+              }>
               <FaImage size={14} />
               Hero Banner
             </NavLink>
 
-            <NavLink
-              to="/admin/promo-settings"
-              onClick={() => setIsOpen(false)}
+            <NavLink to="/admin/promo-settings" onClick={() => setIsOpen(false)}
               className={({ isActive }) =>
-                `${linkStyle} ${
-                  isActive
-                    ? "bg-blue-600 text-white"
-                    : "text-gray-300 hover:bg-gray-800"
-                }`
-              }
-            >
+                `${linkStyle} ${isActive ? "bg-blue-600 text-white" : "text-gray-300 hover:bg-gray-800"}`
+              }>
               <FaImage size={14} />
               Promo Section
             </NavLink>
 
-            <NavLink
-              to="/admin/users"
-              onClick={() => setIsOpen(false)}
+            <NavLink to="/admin/users" onClick={() => setIsOpen(false)}
               className={({ isActive }) =>
-                `${linkStyle} ${
-                  isActive
-                    ? "bg-blue-600 text-white"
-                    : "text-gray-300 hover:bg-gray-800"
-                }`
-              }
-            >
+                `${linkStyle} ${isActive ? "bg-blue-600 text-white" : "text-gray-300 hover:bg-gray-800"}`
+              }>
               <FaUsers size={14} />
               Users
             </NavLink>
 
-            <NavLink
-              to="/admin/bank-details"
-              onClick={() => setIsOpen(false)}
+            <NavLink to="/admin/bank-details" onClick={() => setIsOpen(false)}
               className={({ isActive }) =>
-                `${linkStyle} ${
-                  isActive
-                    ? "bg-blue-600 text-white"
-                    : "text-gray-300 hover:bg-gray-800"
-                }`
-              }
-            >
+                `${linkStyle} ${isActive ? "bg-blue-600 text-white" : "text-gray-300 hover:bg-gray-800"}`
+              }>
               <FaUniversity size={14} />
               Bank Details
             </NavLink>

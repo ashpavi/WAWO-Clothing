@@ -59,11 +59,9 @@ export default function ManageAdmins() {
 
   /* ================= ADD ADMIN ================= */
   const handleAddAdmin = async () => {
-
     if (!newAdmin.name || !newAdmin.email || !newAdmin.password) return;
 
     try {
-
       const userCredential = await createUserWithEmailAndPassword(
         secondaryAuth,
         newAdmin.email,
@@ -81,7 +79,6 @@ export default function ManageAdmins() {
         createdAt: new Date()
       });
 
-      // ✅ LOG ACTIVITY
       await addDoc(collection(db, "superAdminLogs"), {
         action: "added",
         name: newAdmin.name,
@@ -109,7 +106,6 @@ export default function ManageAdmins() {
       isBlocked: newStatus
     });
 
-    // ✅ LOG ACTIVITY
     await addDoc(collection(db, "superAdminLogs"), {
       action: newStatus ? "blocked" : "unblocked",
       name: admin.name,
@@ -131,7 +127,6 @@ export default function ManageAdmins() {
 
     await deleteDoc(doc(db, "users", selectedAdmin.id));
 
-    //  LOG ACTIVITY
     await addDoc(collection(db, "superAdminLogs"), {
       action: "removed",
       name: selectedAdmin.name,
@@ -143,32 +138,35 @@ export default function ManageAdmins() {
     setSelectedAdmin(null);
     fetchAdmins();
   };
-return (
-    <div className="bg-gray-50 h-full flex flex-col overflow-hidden">
 
-      <div className="max-w-5xl w-full mx-auto flex flex-col h-full pt-4 pb-2">
+  return (
+    <div className="bg-gray-50 min-h-screen flex flex-col">
 
-        {/* HEADER */}
-        <div className="flex justify-between items-center mb-3">
+      <div className="max-w-5xl w-full mx-auto flex flex-col pt-4 pb-6 px-4">
+
+        {/* ================= HEADER ================= */}
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-5">
+
           <div>
-            <h1 className="text-2xl font-semibold text-gray-900">
+            <h1 className="text-xl sm:text-2xl font-semibold text-gray-900">
               Manage Admins
             </h1>
-            <p className="text-sm text-gray-500">
+            <p className="text-xs sm:text-sm text-gray-500">
               Add, manage and control admin access
             </p>
           </div>
 
           <button
             onClick={() => setShowAddModal(true)}
-            className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-1.5 text-sm rounded-md"
+            className="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm"
           >
             + Add Admin
           </button>
+
         </div>
 
-        {/* TABLE */}
-        <div className="bg-white rounded-2xl border flex flex-col flex-1 min-h-0 overflow-hidden">
+        {/* ================= ADMIN LIST ================= */}
+        <div className="bg-white rounded-2xl border flex flex-col flex-1 min-h-0">
 
           {admins.length === 0 ? (
             <p className="p-6 text-gray-500 text-sm">
@@ -176,29 +174,31 @@ return (
             </p>
           ) : (
 
-            <div className="overflow-y-auto flex-1 min-h-0 px-2 py-2">
+            <div className="overflow-y-auto p-3 space-y-3">
 
               {admins.map((admin) => (
 
                 <div
                   key={admin.id}
-                  className="flex justify-between items-center px-4 py-2 border-b last:border-none hover:bg-gray-50 rounded-lg"
+                  className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 p-4 border rounded-xl hover:bg-gray-50"
                 >
 
-                  <div>
-                    <p className="font-medium text-gray-900">
+                  {/* INFO */}
+                  <div className="min-w-0">
+                    <p className="font-medium text-gray-900 break-words">
                       {admin.name}
                     </p>
-                    <p className="text-sm text-gray-500">
+                    <p className="text-sm text-gray-500 break-words">
                       {admin.email}
                     </p>
                   </div>
 
-                  <div className="flex gap-2">
+                  {/* ACTIONS */}
+                  <div className="flex flex-wrap gap-2">
 
                     <button
                       onClick={() => toggleStatus(admin)}
-                      className={`px-3 py-[3px] text-xs rounded-md font-medium ${
+                      className={`flex-1 sm:flex-none px-3 py-1.5 text-xs rounded-md font-medium ${
                         admin.isBlocked
                           ? "bg-green-100 text-green-600"
                           : "bg-yellow-100 text-yellow-600"
@@ -209,7 +209,7 @@ return (
 
                     <button
                       onClick={() => confirmDelete(admin)}
-                      className="bg-red-100 text-red-600 px-3 py-[3px] text-xs rounded-md font-medium"
+                      className="flex-1 sm:flex-none bg-red-100 text-red-600 px-3 py-1.5 text-xs rounded-md font-medium"
                     >
                       Remove
                     </button>
@@ -230,10 +230,7 @@ return (
 
       {/* ================= ADD MODAL ================= */}
       {showAddModal && (
-        <Modal onClose={() =>{ 
-        setShowAddModal(false)
-        resetForm()
-        }}>
+        <Modal onClose={() => { setShowAddModal(false); resetForm(); }}>
 
           <h2 className="text-lg font-semibold mb-4">
             Add New Admin
@@ -261,9 +258,7 @@ return (
               className="w-full border px-4 py-2 rounded-lg"
             />
 
-            {/* PASSWORD */}
             <div className="relative">
-
               <input
                 type={showPassword ? "text" : "password"}
                 placeholder="Password"
@@ -281,7 +276,6 @@ return (
               >
                 {showPassword ? <FaEyeSlash /> : <FaEye />}
               </button>
-
             </div>
 
             <button
@@ -308,18 +302,18 @@ return (
             Are you sure you want to remove this admin?
           </p>
 
-          <div className="flex justify-end gap-3">
+          <div className="flex flex-col sm:flex-row justify-end gap-3">
 
             <button
               onClick={() => setShowDeleteModal(false)}
-              className="px-4 py-2 text-sm text-gray-600"
+              className="w-full sm:w-auto px-4 py-2 text-sm text-gray-600"
             >
               Cancel
             </button>
 
             <button
               onClick={deleteAdmin}
-              className="bg-red-600 text-white px-4 py-2 rounded-lg text-sm"
+              className="w-full sm:w-auto bg-red-600 text-white px-4 py-2 rounded-lg text-sm"
             >
               Remove
             </button>
@@ -334,12 +328,11 @@ return (
 }
 
 /* ================= MODAL ================= */
-
 function Modal({ children, onClose }) {
   return (
     <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50">
 
-      <div className="bg-white rounded-2xl p-6 w-full max-w-md shadow-lg relative">
+      <div className="bg-white rounded-2xl p-5 sm:p-6 w-full max-w-md mx-3 sm:mx-0 max-h-[90vh] overflow-y-auto shadow-lg relative">
 
         <button
           onClick={onClose}

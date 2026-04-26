@@ -137,8 +137,18 @@ export default function HomePage() {
 
                 <div className="absolute inset-0 bg-black/40 group-hover:bg-black/50 transition"></div>
 
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <h3 className="text-white text-lg sm:text-xl font-semibold tracking-wide transform transition group-hover:scale-110">
+                <div className="absolute inset-0 flex items-center justify-center text-center p-2">
+                  <h3
+                    className="
+                      text-white text-sm sm:text-lg font-semibold
+                      text-center px-2
+                      leading-tight
+                      line-clamp-2
+                      break-words
+                      drop-shadow-md
+                      transform transition group-hover:scale-105
+                    "
+                  >
                     {category.name}
                   </h3>
                 </div>

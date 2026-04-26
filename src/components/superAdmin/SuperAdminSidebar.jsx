@@ -1,4 +1,4 @@
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import {
   FaTachometerAlt,
   FaUserShield,
@@ -9,9 +9,10 @@ import {
 import logo from "../../assets/logo.png";
 import { useAuth } from "../../hooks/useAuth";
 
-export default function SuperAdminSidebar({isOpen, setIsOpen}) {
+export default function SuperAdminSidebar({ isOpen, setIsOpen }) {
   const { logoutUser } = useAuth();
-  
+  const navigate = useNavigate(); // ✅ FIX ADDED
+
   const linkStyle =
     "flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all duration-200";
 
@@ -36,7 +37,7 @@ export default function SuperAdminSidebar({isOpen, setIsOpen}) {
 
       {/* ================= SIDEBAR ================= */}
       <div
-        className={`fixed lg:static top-0 left-0 h-screen w-64 
+        className={`fixed lg:static top-0 left-0 h-[100dvh] w-64 
         bg-gray-900 text-white shadow-xl z-50 
         transform transition-transform duration-300
         ${
@@ -45,25 +46,22 @@ export default function SuperAdminSidebar({isOpen, setIsOpen}) {
             : "-translate-x-full lg:translate-x-0"
         }`}
       >
-        <div className="flex flex-col h-full px-6 py-6">
-          
+        {/* ✅ SCROLL FIX */}
+        <div className="flex flex-col h-full px-6 py-6 overflow-y-auto">
+
           {/* ================= HEADER ================= */}
           <div className="flex items-center justify-between lg:justify-start mb-10">
             <div className="flex items-center gap-3">
               <img
                 src={logo}
-                alt="LuxeStore Logo"
+                alt="Logo"
                 className="w-16 h-16 object-contain rounded-full p-1 shadow-sm"
               />
-
-              <div>
-                <h2 className="text-base font-semibold text-white">
-                  Super Admin
-                </h2>
-              </div>
+              <h2 className="text-base font-semibold text-white">
+                Super Admin
+              </h2>
             </div>
 
-            {/* CLOSE BTN (MOBILE) */}
             <button
               className="lg:hidden text-gray-400"
               onClick={() => setIsOpen(false)}
@@ -116,6 +114,7 @@ export default function SuperAdminSidebar({isOpen, setIsOpen}) {
             <FaSignOutAlt size={14} />
             Logout
           </button>
+
         </div>
       </div>
     </>

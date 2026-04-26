@@ -254,7 +254,7 @@ export default function ProductList() {
 
           <button
             onClick={() => setSearchParams({})}
-            className="w-full bg-gray-900 text-white py-2 rounded-lg hover:bg-gray-800"
+            className="w-full bg-gray-900 text-white py-2 rounded-lg hover:bg-gray-800 cursor-pointer"
           >
             Reset Filters
           </button>
