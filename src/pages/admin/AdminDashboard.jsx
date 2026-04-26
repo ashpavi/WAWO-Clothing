@@ -70,24 +70,29 @@ export default function AdminDashboard() {
         ...doc.data()
       }));
 
-      setOrders(orderList);
+      /* ✅ SORT BY LATEST */
+      const sortedOrders = orderList.sort(
+        (a, b) => (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0)
+      );
+
+      setOrders(sortedOrders);
 
       /* ===== CALCULATIONS ===== */
 
-      const totalRevenue = orderList.reduce(
+      const totalRevenue = sortedOrders.reduce(
         (acc, order) => acc + (order.total || 0),
         0
       );
 
       setRevenue(totalRevenue);
 
-      const processing = orderList.filter(
+      const processing = sortedOrders.filter(
         (o) => o.status === "Processing"
       ).length;
 
       setProcessingOrders(processing);
 
-      const completed = orderList.filter(
+      const completed = sortedOrders.filter(
         (o) => o.status === "Delivered"
       ).length;
 
@@ -95,7 +100,7 @@ export default function AdminDashboard() {
 
       let sold = 0;
 
-      orderList.forEach((order) => {
+      sortedOrders.forEach((order) => {
         order.items?.forEach((item) => {
           sold += item.quantity;
         });
@@ -163,54 +168,63 @@ export default function AdminDashboard() {
 
       </div>
 
-      {/* ================= CHART ================= */}
-      <div className="bg-white rounded-2xl shadow-md p-6">
+{/* ================= CHART + ORDERS ================= */}
+<div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
 
-        <h2 className="font-semibold text-gray-800 mb-6">
-          Order Status
-        </h2>
+  {/* ================= CHART ================= */}
+  <div className="bg-white rounded-2xl shadow-md p-6">
 
-        <div className="h-72">
-          <ResponsiveContainer width="100%" height="100%">
-            <BarChart data={orderStatusData}>
-              <CartesianGrid stroke="#f1f5f9" />
-              <XAxis dataKey="name" />
-              <YAxis />
-              <Tooltip />
-              <Bar dataKey="value" fill="#2563eb" radius={[8, 8, 0, 0]} />
-            </BarChart>
-          </ResponsiveContainer>
-        </div>
+    <h2 className="font-semibold text-gray-800 mb-4">
+      Order Status
+    </h2>
 
-      </div>
+    {/* smaller height so it doesn't dominate */}
+    <div className="w-full h-64 md:h-72">
+      <ResponsiveContainer width="100%" height="100%">
+        <BarChart data={orderStatusData}>
+          <CartesianGrid stroke="#f1f5f9" />
+          <XAxis dataKey="name" />
+          <YAxis />
+          <Tooltip />
+          <Bar dataKey="value" fill="#2563eb" radius={[8, 8, 0, 0]} />
+        </BarChart>
+      </ResponsiveContainer>
+    </div>
 
-      {/* ================= RECENT ORDERS ================= */}
-      <div className="bg-white rounded-2xl shadow-md p-6">
+  </div>
 
-        <div className="flex items-center justify-between mb-6">
-          <h2 className="font-semibold text-gray-800">Recent Orders</h2>
+  {/* ================= RECENT ORDERS ================= */}
+  <div className="bg-white rounded-2xl shadow-md p-6 flex flex-col">
 
-          <Link
-            to="/admin/orders"
-            className="text-sm text-blue-600 hover:text-blue-700"
-          >
-            View All
-          </Link>
-        </div>
+    <div className="flex items-center justify-between mb-4">
+      <h2 className="font-semibold text-gray-800">
+        Recent Orders
+      </h2>
 
-        <div className="space-y-4">
-          {orders.slice(0, 5).map((order) => (
-            <OrderRow
-              key={order.id}
-              id={order.id}
-              user={order.customer?.fullName}
-              total={formatPrice(order.total)}
-              status={order.status}
-            />
-          ))}
-        </div>
+      <Link
+        to="/admin/orders"
+        className="text-sm text-blue-600 hover:text-blue-700"
+      >
+        View All
+      </Link>
+    </div>
 
-      </div>
+    {/* scrollable if many orders */}
+    <div className="space-y-3 overflow-y-auto max-h-72 pr-1">
+      {orders.slice(0, 5).map((order) => (
+        <OrderRow
+          key={order.id}
+          id={order.id}
+          user={order.customer?.fullName}
+          total={formatPrice(order.total)}
+          status={order.status}
+        />
+      ))}
+    </div>
+
+  </div>
+
+</div>
 
     </div>
   );

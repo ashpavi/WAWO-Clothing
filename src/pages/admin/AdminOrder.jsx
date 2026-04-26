@@ -54,76 +54,162 @@ export default function AdminOrders() {
         Order Management
       </h1>
 
-      {/* TABLE */}
-      <div className="bg-white rounded-xl shadow border overflow-x-auto">
+      {/* ================= ORDERS ================= */}
+<div className="bg-white rounded-xl shadow border">
 
-        <table className="w-full text-left">
+  {/* DESKTOP TABLE */}
+  <div className="hidden md:block overflow-x-auto">
+    <table className="w-full text-left">
 
-          <thead className="bg-gray-50 text-gray-600 text-sm uppercase">
-            <tr>
-              <th className="p-4">Order ID</th>
-              <th className="p-4">Customer</th>
-              <th className="p-4">Total</th>
-              <th className="p-4">Payment</th>
-              <th className="p-4">Status</th>
-              <th className="p-4 text-center">Actions</th>
-            </tr>
-          </thead>
+      <thead className="bg-gray-50 text-gray-600 text-sm uppercase">
+        <tr>
+          <th className="p-4">Order ID</th>
+          <th className="p-4">Customer</th>
+          <th className="p-4">Total</th>
+          <th className="p-4">Payment</th>
+          <th className="p-4">Status</th>
+          <th className="p-4 text-center">Actions</th>
+        </tr>
+      </thead>
 
-          <tbody>
-            {orders.map((order) => (
-              <tr key={order.id} className="border-t hover:bg-gray-50">
+      <tbody>
+        {orders.map((order) => (
+          <tr key={order.id} className="border-t hover:bg-gray-50">
 
-                <td className="p-4 font-semibold">{order.id}</td>
+            <td className="p-4 font-semibold">{order.id}</td>
 
-                <td className="p-4">
-                  <div className="font-medium">
-                    {order.customer?.fullName}
-                  </div>
-                  <div className="text-sm text-gray-500">
-                    {order.customer?.email}
-                  </div>
-                </td>
+            <td className="p-4">
+              <div className="font-medium">
+                {order.customer?.fullName}
+              </div>
+              <div className="text-sm text-gray-500">
+                {order.customer?.email}
+              </div>
+            </td>
 
-                <td className="p-4 font-semibold">
-                  {formatPrice(order.total)}
-                </td>
+            <td className="p-4 font-semibold">
+              {formatPrice(order.total)}
+            </td>
 
-                <td className="p-4 text-gray-600">
-                  {formatPaymentMethod(order.paymentMethod)}
-                </td>
+            <td className="p-4 text-gray-600">
+              {formatPaymentMethod(order.paymentMethod)}
+            </td>
 
-                <td className="p-4">
-                  <select
-                    value={order.status}
-                    onChange={(e) =>
-                      updateOrderStatus(order.id, e.target.value)
-                    }
-                    className={`px-3 py-1 rounded-full text-sm font-medium ${statusColor(order.status)}`}
-                  >
-                    <option>Processing</option>
-                    <option>Shipped</option>
-                    <option>Delivered</option>
-                    <option>Cancelled</option>
-                  </select>
-                </td>
+            <td className="p-4">
+              <select
+                value={order.status}
+                onChange={(e) =>
+                  updateOrderStatus(order.id, e.target.value)
+                }
+                className={`px-3 py-1 rounded-full text-sm font-medium ${statusColor(order.status)}`}
+              >
+                <option>Processing</option>
+                <option>Shipped</option>
+                <option>Delivered</option>
+                <option>Cancelled</option>
+              </select>
+            </td>
 
-                <td className="p-4 text-center">
-                  <button
-                    onClick={() => setSelectedOrder(order)}
-                    className="text-blue-600 hover:text-blue-800"
-                  >
-                    <FaEye />
-                  </button>
-                </td>
+            <td className="p-4 text-center">
+              <button
+                onClick={() => setSelectedOrder(order)}
+                className="text-blue-600 hover:text-blue-800"
+              >
+                <FaEye />
+              </button>
+            </td>
 
-              </tr>
-            ))}
-          </tbody>
+          </tr>
+        ))}
+      </tbody>
 
-        </table>
+    </table>
+  </div>
 
-      </div>
+  {/* MOBILE CARDS */}
+  <div className="md:hidden space-y-4 p-4">
+
+    {orders.map((order) => (
+
+      <div key={order.id} className="bg-white border rounded-xl p-4 shadow-sm space-y-4">
+
+  {/* TOP ROW */}
+  <div className="flex justify-between items-start gap-3">
+    <div className="min-w-0">
+      <p className="text-xs text-gray-400">Order ID</p>
+      <p className="font-semibold text-gray-900 truncate">
+        {order.id}
+      </p>
+    </div>
+
+    <div className="text-right">
+      <p className="text-xs text-gray-400">Total</p>
+      <p className="font-semibold text-gray-900">
+        {formatPrice(order.total)}
+      </p>
+    </div>
+  </div>
+
+  {/* CUSTOMER */}
+  <div className="border-t pt-3">
+    <p className="text-xs text-gray-400 mb-1">Customer</p>
+    <p className="font-medium text-gray-800">
+      {order.customer?.fullName}
+    </p>
+    <p className="text-sm text-gray-500 break-words">
+      {order.customer?.email}
+    </p>
+  </div>
+
+  {/* PAYMENT */}
+  <div className="border-t pt-3 flex justify-between items-center">
+    <div>
+      <p className="text-xs text-gray-400">Payment</p>
+      <p className="text-sm text-gray-700">
+        {formatPaymentMethod(order.paymentMethod)}
+      </p>
+    </div>
+
+    {/* STATUS BADGE */}
+    <span className={`text-xs px-3 py-1 rounded-full font-medium ${statusColor(order.status)}`}>
+      {order.status}
+    </span>
+  </div>
+
+  {/* STATUS DROPDOWN */}
+  <div>
+    <p className="text-xs text-gray-400 mb-1">Update Status</p>
+    <select
+      value={order.status}
+      onChange={(e) =>
+        updateOrderStatus(order.id, e.target.value)
+      }
+      className={`w-full px-3 py-2 rounded-lg text-sm font-medium ${statusColor(order.status)}`}
+    >
+      <option>Processing</option>
+      <option>Shipped</option>
+      <option>Delivered</option>
+      <option>Cancelled</option>
+    </select>
+  </div>
+
+  {/* ACTION */}
+  <div className="flex justify-end pt-2 border-t">
+    <button
+      onClick={() => setSelectedOrder(order)}
+      className="flex items-center gap-1 text-blue-600 text-sm font-medium"
+    >
+      <FaEye /> View Details
+    </button>
+  </div>
+
+</div>
+
+    ))}
+
+  </div>
+
+</div>
 
       {/* MODAL */}
       {selectedOrder && (
