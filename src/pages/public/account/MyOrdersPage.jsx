@@ -7,8 +7,6 @@ import { useAuth } from "../../../hooks/useAuth";
 export default function MyOrdersPage() {
 
   const { currentUser } = useAuth();
-
-  // 🔥 Only fetch logged-in user's orders
   const { orders, loading } = useOrders(currentUser?.uid);
 
   const [selectedOrder, setSelectedOrder] = useState(null);
@@ -20,10 +18,9 @@ export default function MyOrdersPage() {
   }
 
   return (
-
     <div>
 
-      <h2 className="text-2xl font-semibold mb-6">
+      <h2 className="text-xl sm:text-2xl font-semibold mb-6">
         My Orders
       </h2>
 
@@ -39,45 +36,55 @@ export default function MyOrdersPage() {
 
           <div
             key={order.id}
-            className="border rounded-xl p-5 flex justify-between items-center hover:shadow-sm transition"
+            className="border rounded-xl p-4 sm:p-5 hover:shadow-sm transition bg-white"
           >
 
-            {/* ORDER INFO */}
-            <div>
-              <p className="text-sm text-gray-500">
-                {order.createdAt?.toDate?.().toLocaleDateString() || "—"}
-              </p>
+            {/* TOP SECTION */}
+            <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3">
 
-              <p className="font-semibold">
-                #{order.id}
-              </p>
+              {/* ORDER INFO */}
+              <div className="space-y-1">
 
-              <p className="text-sm text-gray-600">
-                {formatPrice(order.total)}
-              </p>
+                <p className="text-xs sm:text-sm text-gray-500">
+                  {order.createdAt?.toDate?.().toLocaleDateString() || "—"}
+                </p>
+
+                <p className="font-semibold text-sm sm:text-base">
+                  #{order.id}
+                </p>
+
+                <p className="text-sm text-gray-700 font-medium">
+                  {formatPrice(order.total)}
+                </p>
+
+              </div>
+
+              {/* STATUS */}
+              <div>
+                <span
+                  className={`inline-block px-3 sm:px-4 py-1 rounded-full text-xs sm:text-sm font-medium
+                  ${
+                    order.status === "Delivered"
+                      ? "bg-green-100 text-green-600"
+                      : order.status === "Shipped"
+                      ? "bg-blue-100 text-blue-600"
+                      : order.status === "Cancelled"
+                      ? "bg-red-100 text-red-600"
+                      : "bg-yellow-100 text-yellow-600"
+                  }`}
+                >
+                  {order.status || "Processing"}
+                </span>
+              </div>
+
             </div>
 
-            {/* STATUS + ACTION */}
-            <div className="flex items-center gap-6">
-
-              <span
-                className={`px-4 py-1 rounded-full text-sm font-medium
-                ${
-                  order.status === "Delivered"
-                    ? "bg-green-100 text-green-600"
-                    : order.status === "Shipped"
-                    ? "bg-blue-100 text-blue-600"
-                    : order.status === "Cancelled"
-                    ? "bg-red-100 text-red-600"
-                    : "bg-yellow-100 text-yellow-600"
-                }`}
-              >
-                {order.status || "Processing"}
-              </span>
+            {/* ACTION (separate row for mobile clarity) */}
+            <div className="mt-4 flex justify-end">
 
               <button
                 onClick={() => setSelectedOrder(order)}
-                className="text-blue-600 hover:underline text-sm"
+                className="text-blue-600 text-sm font-medium hover:underline"
               >
                 View Details
               </button>
@@ -90,7 +97,7 @@ export default function MyOrdersPage() {
 
       </div>
 
-      {/* ORDER MODAL */}
+      {/* MODAL */}
       {selectedOrder && (
         <OrderDetailsModal
           order={selectedOrder}

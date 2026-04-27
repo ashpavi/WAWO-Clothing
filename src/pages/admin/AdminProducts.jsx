@@ -46,18 +46,23 @@ export default function AdminProducts() {
   };
 
   /* SAVE EDIT */
-  const handleSave = async () => {
+const handleSave = async () => {
   try {
 
-    let imageUrls = previewImages;
-    if (imageFiles.length > 0) {
+    let imageUrls = editingProduct.images || [];
 
+    //  If user uploaded new images → replace
+    if (imageFiles.length > 0) {
       const uploaded = await uploadProductImages(
         imageFiles,
         editingProduct.id
       );
-
       imageUrls = uploaded;
+    }
+
+    //  If NO images at all → use default
+    if (!imageUrls || imageUrls.length === 0) {
+      imageUrls = ["/default-product.jpg"];
     }
 
     const { id, ...productData } = editingProduct;
@@ -72,9 +77,7 @@ export default function AdminProducts() {
     setPreviewImages([]);
 
   } catch (error) {
-
     console.error("Update failed:", error);
-
   }
 };
 
@@ -239,7 +242,7 @@ export default function AdminProducts() {
               <div className="flex gap-4">
 
                 <img
-                  src={product.images?.[0]}
+                  src={product.images?.[0] || "/default-product.jpg"}
                   className="w-20 h-20 rounded-lg object-cover border shrink-0"
                 />
 
@@ -288,7 +291,11 @@ export default function AdminProducts() {
               <div className="flex justify-end gap-4 mt-4 border-t pt-3">
 
                 <button
-                  onClick={() => setEditingProduct(product)}
+                  onClick={() => {
+                    setEditingProduct(product);
+                    setPreviewImages(product.images || []);
+                    setImageFiles([]); 
+                  }}
                   className="flex items-center gap-1 text-blue-600 text-sm"
                 >
                   <FaEdit /> Edit

@@ -43,7 +43,7 @@ export default function ProductCard({ product }) {
         className="block bg-gray-100 aspect-[4/5] overflow-hidden"
       >
         <img
-          src={product.images?.[0]}
+          src={product.images?.[0] || "/default-product.jpg"}
           alt={product.name}
           className="w-full h-full object-cover transition-transform duration-500 hover:scale-105"
         />
