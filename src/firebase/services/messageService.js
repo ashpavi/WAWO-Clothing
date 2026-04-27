@@ -10,6 +10,7 @@ import {
 } from "firebase/firestore";
 
 import { db } from "../firebaseConfig";
+import { deleteDoc } from "firebase/firestore";
 
 const messageCollection = collection(db, "contactMessages");
 
@@ -69,4 +70,8 @@ export const markContactMessageRead = async (id) => {
     status: "read",
     readAt: serverTimestamp(),
   });
+};
+
+export const deleteContactMessage = async (id) => {
+  await deleteDoc(doc(db, "contactMessages", id));
 };
